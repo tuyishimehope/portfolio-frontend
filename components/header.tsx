@@ -1,18 +1,24 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { posts, site } from "@/lib/content";
+import { site } from "@/lib/content";
 
 const links = [
-  { href: "#work", label: "Work" },
-  { href: "#about", label: "About" },
-  ...(posts.length ? [{ href: "#writing", label: "Writing" }] : []),
-  { href: "#contact", label: "Contact" },
+  { href: "/", label: "Home" },
+  { href: "/projects", label: "Work" },
+  { href: "/about", label: "About" },
+  { href: "/blogs", label: "Blogs" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -28,16 +34,20 @@ export default function Header() {
       }`}
     >
       <nav aria-label="Primary" className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-4 md:px-8">
-        <a href="#top" className="text-lg font-semibold tracking-tight">
+        <Link href="/" className="text-lg font-semibold tracking-tight">
           Hope<span className="text-accent">.</span>
-        </a>
+        </Link>
 
         <ul className="hidden items-center gap-8 text-[15px] md:flex">
           {links.map((l) => (
             <li key={l.href}>
-              <a href={l.href} className="text-muted transition-colors hover:text-foreground">
+              <Link
+                href={l.href}
+                aria-current={isActive(l.href) ? "page" : undefined}
+                className={`transition-colors hover:text-foreground ${isActive(l.href) ? "text-foreground" : "text-muted"}`}
+              >
                 {l.label}
-              </a>
+              </Link>
             </li>
           ))}
           <li>
@@ -70,9 +80,14 @@ export default function Header() {
         >
           {links.map((l) => (
             <li key={l.href}>
-              <a href={l.href} onClick={() => setOpen(false)}>
+              <Link
+                href={l.href}
+                aria-current={isActive(l.href) ? "page" : undefined}
+                className={isActive(l.href) ? "text-accent" : ""}
+                onClick={() => setOpen(false)}
+              >
                 {l.label}
-              </a>
+              </Link>
             </li>
           ))}
           <li>

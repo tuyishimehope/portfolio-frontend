@@ -2,10 +2,10 @@
 
 export const site = {
   name: "Hope Tuyishime Wilberforce",
-  email: "[TODO]@example.com",
-  resume: "/resume.pdf", // [TODO] add public/resume.pdf
-  linkedin: "https://www.linkedin.com/in/[TODO]",
-  github: "https://github.com/[TODO]",
+  email: "tuyishimehope01@gmail.com",
+  resume: "/resume.pdf", // copied from doc/
+  linkedin: "https://www.linkedin.com/in/hope-tuyishime/",
+  github: "https://github.com/tuyishimehope",
   location: "Kigali, Rwanda",
 };
 
@@ -17,7 +17,16 @@ export type Project = {
   stack: string[];
   year: string;
   visual: string; // describes the placeholder until a real image exists
+  // Case-study body. Keep every claim defensible in an interview.
+  caseStudy: { heading: string; body: string }[];
 };
+
+const caseStudyTodo = [
+  { heading: "Context", body: "[TODO] Who had the problem and why it mattered." },
+  { heading: "What I built", body: "[TODO] Architecture, key decisions, and trade-offs." },
+  { heading: "Hard parts", body: "[TODO] Failure modes, data issues, or scaling limits you handled." },
+  { heading: "Outcome", body: "[TODO] Scope or real results only. No invented metrics." },
+];
 
 export const flagship: Project = {
   slug: "trustplot",
@@ -28,6 +37,7 @@ export const flagship: Project = {
   stack: ["[TODO]", "[TODO]", "[TODO]"],
   year: "2026",
   visual: "Map / search results screenshot",
+  caseStudy: caseStudyTodo,
 };
 
 export const secondary: Project[] = [
@@ -39,6 +49,7 @@ export const secondary: Project[] = [
     stack: ["FastAPI", "PostgreSQL", "Queue workers"],
     year: "[TODO]",
     visual: "Upload → queue → workers → storage",
+    caseStudy: caseStudyTodo,
   },
   {
     slug: "ai-assistant",
@@ -49,6 +60,7 @@ export const secondary: Project[] = [
     stack: ["Python", "LLM APIs", "[TODO]"],
     year: "[TODO]",
     visual: "Workflow diagram",
+    caseStudy: caseStudyTodo,
   },
 ];
 
@@ -88,6 +100,8 @@ export const experience = [
     impact: "[TODO]",
   },
 ];
+
+export const projects = [flagship, ...secondary];
 
 // Leave empty until real posts exist; the Writing section hides itself.
 export const posts: { date: string; title: string; readTime: string; href: string }[] = [];
