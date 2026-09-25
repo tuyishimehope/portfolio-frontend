@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Reveal from "@/components/reveal";
-import { AccentLabel, ProjectVisual, StackBadges, container } from "@/components/site";
+import { AccentLabel, BackLink, ProjectVisual, StackBadges, after, container, enter } from "@/components/site";
+import { cn } from "@/lib/utils";
 import { projects } from "@/lib/content";
 
 export function generateStaticParams() {
@@ -27,16 +28,17 @@ export default async function CaseStudyPage(props: PageProps<"/projects/[slug]">
   return (
     <main id="top">
       <section className={`${container} pt-24 pb-16 md:pt-32`}>
-        <Link href="/projects" className="meta hover:text-primary">
-          ← All work
-        </Link>
-        <div className="mt-10">
-          <AccentLabel project={project}>{`${project.role} · ${project.year}`}</AccentLabel>
+        <BackLink href="/projects">All work</BackLink>
+        <div className={cn(enter, "mt-10")}>
+          <AccentLabel project={project}>{[project.role, project.year].filter(Boolean).join(" · ")}</AccentLabel>
         </div>
-        <h1 className="mt-4 text-[clamp(40px,6vw,80px)] font-semibold leading-[1.03] tracking-[-0.03em]">
+        <h1
+          className={cn(enter, "mt-4 text-[clamp(40px,6vw,80px)] font-semibold leading-[1.03] tracking-[-0.03em]")}
+          style={after(120)}
+        >
           {project.title}
         </h1>
-        <div className="mt-8 grid gap-8 md:grid-cols-12">
+        <div className={cn(enter, "mt-8 grid gap-8 md:grid-cols-12")} style={after(240)}>
           <p className="text-[20px] leading-relaxed text-body md:col-span-7">{project.problem}</p>
           <div className="md:col-span-4 md:col-start-9">
             <p className="meta mb-3">Stack</p>

@@ -3,6 +3,7 @@
 import { useEffect, useSyncExternalStore } from "react";
 import { Monitor, MoonStar, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { track } from "@/lib/analytics";
 
 type Theme = "light" | "system" | "dark";
 let fallback: Theme = "system";
@@ -33,6 +34,7 @@ function choose(value: Theme) {
     // Keep the choice for this visit when storage is unavailable.
   }
   window.dispatchEvent(new Event("theme-change"));
+  track("theme_changed", { theme: value });
 }
 
 const options = [

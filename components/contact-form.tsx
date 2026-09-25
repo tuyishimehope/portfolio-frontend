@@ -4,8 +4,9 @@ import { useState, type FormEvent } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { site } from "@/lib/content";
+import { track } from "@/lib/analytics";
 
-const fieldClass = "w-full rounded-xl border border-input bg-background px-4 py-3.5 text-base text-foreground placeholder:text-muted-foreground focus-visible:border-primary focus-visible:outline-primary";
+const fieldClass = "field";
 
 export default function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
@@ -13,11 +14,13 @@ export default function ContactForm() {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     // Integrate the message endpoint here. Preserve the fields until delivery succeeds.
+    // Analytics: only the fact of the attempt, never the name, email or message.
+    track("contact_form_submitted", { delivered: false });
     setSubmitted(true);
   }
 
   return (
-    <form onSubmit={handleSubmit} aria-labelledby="message-heading" aria-describedby="message-note" className="rounded-3xl border bg-card p-6 shadow-sm sm:p-8">
+    <form onSubmit={handleSubmit} aria-labelledby="message-heading" aria-describedby="message-note" className="rounded-[28px] border bg-card p-6 shadow-[0_24px_60px_-30px_rgb(10_37_64/0.25),inset_0_1px_0_rgb(255_255_255/0.6)] dark:shadow-[0_24px_60px_-30px_rgb(0_0_0/0.6),inset_0_1px_0_rgb(255_255_255/0.08)] sm:p-8">
       <h2 id="message-heading" className="text-2xl font-semibold tracking-tight">Send a message</h2>
       <p id="message-note" className="mt-2 text-sm leading-relaxed text-body">
         Message delivery is coming soon. For now, please <a href={`mailto:${site.email}`} className="text-primary underline underline-offset-4">email me directly</a>.
@@ -36,8 +39,8 @@ export default function ContactForm() {
           <textarea id="contact-message" name="message" required minLength={10} maxLength={5000} rows={7} placeholder="Tell me about your project, opportunity, or idea…" className={`${fieldClass} min-h-48 resize-y`} />
         </div>
       </div>
-      <Button type="submit" className="mt-6 h-12 w-full rounded-xl text-base hover:bg-primary-hover">
-        Send message <ArrowUpRight aria-hidden="true" className="size-4" />
+      <Button type="submit" className="btn-glow group mt-6 h-13 w-full rounded-full text-base hover:bg-primary-hover">
+        Send message <ArrowUpRight aria-hidden="true" className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
       </Button>
       <div role="status" aria-live="polite">
         {submitted && (

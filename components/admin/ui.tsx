@@ -1,0 +1,6 @@
+import type { ReactNode } from "react";
+export function PageTitle({ eyebrow, title, description, action }: { eyebrow: string; title: string; description: string; action?: ReactNode }) {
+  return <div className="mb-8 flex flex-wrap items-end justify-between gap-5"><div><p className="mb-2 text-[10px] font-semibold uppercase tracking-[.18em] text-primary">{eyebrow}</p><h1 className="text-3xl font-semibold tracking-[-.04em] sm:text-4xl">{title}</h1><p className="mt-3 max-w-2xl text-sm leading-relaxed text-body">{description}</p></div>{action}</div>;
+}
+export function Status({ published }: { published: boolean }) { return <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium ${published ? "bg-primary/8 text-primary" : "bg-muted text-muted-foreground"}`}><span className={`size-1.5 rounded-full ${published ? "bg-primary" : "bg-muted-foreground"}`} />{published ? "Published · preview" : "Draft"}</span>; }
+export function Empty({ title, children }: { title: string; children: ReactNode }) { return <div className="rounded-2xl border border-dashed bg-card px-6 py-16 text-center"><h2 className="text-lg font-semibold">{title}</h2><div className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-body">{children}</div></div>; }

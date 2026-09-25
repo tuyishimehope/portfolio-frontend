@@ -2,7 +2,15 @@
 
 import { useEffect, useRef, type ReactNode } from "react";
 
-export default function Reveal({ children, className = "" }: { children: ReactNode; className?: string }) {
+export default function Reveal({
+  children,
+  className = "",
+  delay = 0,
+}: {
+  children: ReactNode;
+  className?: string;
+  delay?: number; // ms, for staggering siblings
+}) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -22,7 +30,7 @@ export default function Reveal({ children, className = "" }: { children: ReactNo
   }, []);
 
   return (
-    <div ref={ref} className={`reveal ${className}`}>
+    <div ref={ref} className={`reveal ${className}`} style={delay ? { transitionDelay: `${delay}ms` } : undefined}>
       {children}
     </div>
   );

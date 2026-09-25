@@ -9,6 +9,7 @@ import ThemeSwitcher from "@/components/theme-switcher";
 import { container } from "@/components/site";
 import { cn } from "@/lib/utils";
 import { projects, site } from "@/lib/content";
+import { analyticsEnabled, openConsentSettings } from "@/lib/analytics";
 
 // Lucide dropped brand marks, so these two are inline.
 function GitHubIcon(props: SVGProps<SVGSVGElement>) {
@@ -163,7 +164,14 @@ export default function Footer() {
               "flex flex-col items-start gap-4 py-6 text-[13px] text-muted-foreground md:flex-row md:items-center md:justify-between",
             )}
           >
-            <span>© 2026 {site.name}</span>
+            <span className="flex flex-wrap items-center gap-x-4 gap-y-1">
+              <span>© 2026 {site.name}</span>
+              {analyticsEnabled && (
+                <button type="button" onClick={openConsentSettings} className="underline-offset-4 hover:text-primary hover:underline">
+                  Cookie settings
+                </button>
+              )}
+            </span>
             <ThemeSwitcher />
             <a href="#top" className="hover:text-primary">
               Back to top <span className="arrow arrow-up" aria-hidden>↑</span>

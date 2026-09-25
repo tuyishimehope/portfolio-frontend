@@ -42,26 +42,27 @@
   --growth: #42d392;
 }
 
+/* Dark theme = the auth / hero "space" palette, so the page continues the hero */
 .dark {
-  --ink: #f7f9fc;
-  --background: #0a2540;
-  --foreground: #f7f9fc;
-  --body: #c1cddb;
-  --card: #12304f;
-  --card-foreground: #f7f9fc;
-  --popover: #12304f;
-  --popover-foreground: #f7f9fc;
-  --primary: #8b85ff;
-  --primary-hover: #a5a0ff;
-  --primary-foreground: #0a2540;
-  --secondary: #12304f;
-  --secondary-foreground: #f7f9fc;
-  --muted: #12304f;
-  --muted-foreground: #9fb0c3;
-  --accent: #12304f;
-  --accent-foreground: #f7f9fc;
-  --border: #1f3d5c;
-  --input: #1f3d5c;
+  --ink: #f6f9ff;
+  --background: #050b17;
+  --foreground: #f6f9ff;
+  --body: #b8c4d9;
+  --card: #0a1426;
+  --card-foreground: #f6f9ff;
+  --popover: #0a1426;
+  --popover-foreground: #f6f9ff;
+  --primary: #8fa8ff;
+  --primary-hover: #b7c6ff;
+  --primary-foreground: #06152a;
+  --secondary: #0f1c33;
+  --secondary-foreground: #f6f9ff;
+  --muted: #0f1c33;
+  --muted-foreground: #95a7c7;
+  --accent: #0f1c33;
+  --accent-foreground: #f6f9ff;
+  --border: #ffffff17;
+  --input: #ffffff21;
 }
 
 @theme inline {
@@ -188,6 +189,156 @@
   mask-image: linear-gradient(to bottom, #000 45%, transparent 100%);
 }
 
+/* Decorative loops (from the Trustplot auth showcase) */
+@theme {
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-drift: drift 24s ease-in-out infinite alternate;
+
+  @keyframes float {
+    0%,
+    100% {
+      translate: 0 0;
+    }
+    50% {
+      translate: 0 -10px;
+    }
+  }
+
+  /* Slow camera-like drift for photos */
+  @keyframes drift {
+    from {
+      transform: scale(1.04) translate(0.8%, 0.5%);
+    }
+    to {
+      transform: scale(1.1) translate(-0.8%, -0.8%);
+    }
+  }
+}
+
+/*
+  Shared language from the auth pages, reused across the site:
+  eyebrow labels, the "space" navy panel, dark glass, glowing primary buttons,
+  and soft-focus fields.
+*/
+.eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+/* Deep navy with a sky glow from above (auth-page background, tuned for panels) */
+.space-panel {
+  color-scheme: dark;
+  color: #f6f9ff;
+  background:
+    radial-gradient(ellipse at 50% -20%, #b2f4ff55 0%, #367df440 22%, #163ebf30 42%, transparent 66%),
+    radial-gradient(ellipse at 0% 100%, #123a9b60, transparent 50%),
+    radial-gradient(ellipse at 100% 80%, #125b7840, transparent 45%),
+    #061327;
+}
+.space-stars {
+  opacity: 0.45;
+  background-image:
+    radial-gradient(circle, #c9e9ff 1px, transparent 1.5px),
+    radial-gradient(circle, #c9e9ff 1px, transparent 1.5px);
+  background-size: 167px 193px, 283px 271px;
+  background-position: 37px 61px, 129px 83px;
+  -webkit-mask-image: linear-gradient(black, transparent 70%);
+  mask-image: linear-gradient(black, transparent 70%);
+}
+.space-orbit {
+  pointer-events: none;
+  position: absolute;
+  border: 1px solid #a9d8ff14;
+  border-radius: 50%;
+}
+
+/* Dark frosted card (auth-card) */
+.glass-dark {
+  border: 1px solid #ffffff24;
+  background: linear-gradient(155deg, #729fe526, #0a1a33d9 44%, #081427e6);
+  box-shadow: 0 24px 70px #00000055, inset 0 1px 0 #ffffff18;
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+}
+
+/* Primary action: glow + lift (auth-submit / Trustplot submit) */
+.btn-glow {
+  box-shadow: 0 6px 24px -8px color-mix(in oklab, var(--primary) 70%, transparent);
+  transition: background-color 150ms, box-shadow 200ms, transform 200ms;
+}
+.btn-glow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px -10px color-mix(in oklab, var(--primary) 80%, transparent);
+}
+.btn-glow:active {
+  transform: none;
+}
+
+/* Form fields: tall, soft focus ring in the primary tint (auth-input, light-mode aware) */
+.field {
+  width: 100%;
+  min-height: 3.25rem;
+  border: 1px solid var(--input);
+  border-radius: 1rem;
+  background: var(--background);
+  padding: 0.85rem 1.1rem;
+  color: var(--foreground);
+  font-size: 16px;
+  transition: border-color 150ms, box-shadow 150ms, background-color 150ms;
+}
+.field::placeholder {
+  color: var(--muted-foreground);
+}
+.field:hover {
+  border-color: color-mix(in oklab, var(--primary) 30%, var(--input));
+}
+.field:focus-visible {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--primary) 15%, transparent);
+}
+.field[aria-invalid="true"],
+.field:user-invalid {
+  border-color: var(--destructive);
+}
+
+/* Skip link: hidden until focused */
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: 0.75rem;
+  z-index: 100;
+  transform: translateY(-150%);
+  border-radius: 999px;
+  background: var(--primary);
+  padding: 0.6rem 1rem;
+  color: var(--primary-foreground);
+  font-size: 14px;
+  font-weight: 500;
+  transition: transform 150ms;
+}
+.skip-link:focus-visible {
+  transform: none;
+}
+
+/* Dark mode borrows the auth atmosphere: a faint sky glow at the top of every page */
+.dark body {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, #367df426, transparent 70%) no-repeat,
+    radial-gradient(ellipse 60% 40% at 0% 45%, #123a9b30, transparent 70%) fixed,
+    radial-gradient(ellipse 55% 40% at 100% 75%, #125b7826, transparent 70%) fixed,
+    var(--background);
+}
+
+/* Dark cards pick up the auth card's glass: faint blue sheen + light top edge */
+.dark [data-slot="card"] {
+  background: linear-gradient(155deg, #729fe51c, var(--card) 42%);
+  box-shadow: inset 0 1px 0 #ffffff12, 0 24px 60px -30px #000000aa;
+}
+
 /* Scroll-entry reveal */
 .reveal {
   opacity: 0;
@@ -291,6 +442,7 @@ a:focus-visible .arrow-up {
   transition: border-color 150ms, box-shadow 150ms, background 150ms;
 }
 .auth-password { padding-right: 3.5rem; }
+.auth-input-icon { padding-left: 3rem; }
 .auth-input::placeholder { color: #a9b5cb; font-size: 14px; }
 .auth-input:focus {
   outline: none;
@@ -320,6 +472,47 @@ a:focus-visible .arrow-up {
 }
 .auth-submit:hover { filter: brightness(1.1); box-shadow: 0 6px 32px #438cfa45; }
 .auth-page :focus-visible { outline-color: #80e9ff; }
+/* Big numbers: indigo → cyan, dark enough to read on white */
+.stat-gradient-text {
+  background: linear-gradient(100deg, var(--primary), #1d9bd1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.dark .stat-gradient-text {
+  background-image: linear-gradient(100deg, #8fa8ff, #56dff5);
+}
+/* Same periwinkle → ice → cyan as the auth submit button, as text */
+.space-gradient-text {
+  background: linear-gradient(100deg, #8fa8ff, #b7e8f5 55%, #56dff5);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.auth-submit:hover .arrow,
+.auth-social:hover .arrow { transform: translateX(3px); }
 @media (max-width: 639px) {
   .auth-card { background: #050d1d70; }
 }
+
+/* Shared admin surfaces use the portfolio's semantic color tokens. */
+.admin-app { background: var(--background); color: var(--foreground); font-size: 14px; }
+.admin-panel { border: 1px solid var(--border); border-radius: 18px; background: var(--card); box-shadow: 0 2px 4px #0a254003; }
+.admin-welcome { background: linear-gradient(115deg, color-mix(in srgb, var(--sky) 12%, var(--card)), var(--card) 55%, color-mix(in srgb, var(--primary) 8%, var(--card))); }
+.admin-nav { display: flex; align-items: center; gap: 12px; border-radius: 10px; padding: 12px; font-size: 13px; color: var(--body); transition: background 150ms, color 150ms; }
+.admin-nav:hover { background: var(--muted); color: var(--foreground); }
+.admin-nav-active { background: color-mix(in srgb, var(--primary) 8%, transparent); color: var(--primary); font-weight: 600; }
+.admin-button, .admin-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; border-radius: 10px; padding: 10px 16px; font-size: 12px; font-weight: 500; transition: background 150ms; }
+.admin-button { background: var(--primary); color: var(--primary-foreground); }
+.admin-button:hover { background: var(--primary-hover); }
+.admin-secondary { border: 1px solid var(--border); background: var(--card); color: var(--foreground); }
+.admin-secondary:hover { background: var(--muted); }
+.admin-icon { display: inline-flex; width: 36px; height: 36px; align-items: center; justify-content: center; border: 1px solid var(--border); border-radius: 9px; background: var(--card); }
+.admin-icon:hover { background: var(--muted); }
+.admin-label { display: flex; flex-direction: column; gap: 8px; font-size: 12px; font-weight: 500; }
+.admin-input { width: 100%; min-width: 0; border: 1px solid var(--input); border-radius: 9px; background: var(--background); padding: 11px 12px; color: var(--foreground); font-size: 14px; font-weight: 400; }
+.admin-input.pl-10 { padding-left: 40px; }
+.admin-input::placeholder { color: var(--muted-foreground); }
+.admin-input:focus { outline: 2px solid color-mix(in srgb, var(--primary) 30%, transparent); outline-offset: 1px; border-color: var(--primary); }
+textarea.admin-input { resize: vertical; }
+@media (max-width: 639px) { .admin-input { font-size: 16px; } }

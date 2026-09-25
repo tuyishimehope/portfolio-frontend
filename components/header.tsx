@@ -19,28 +19,44 @@ const links = [
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
+  // True while the header sits over a dark "space" hero (only the homepage has one).
+  const [overDark, setOverDark] = useState(false);
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 8);
+      const hero = document.querySelector("[data-dark-hero]");
+      setOverDark(hero ? hero.getBoundingClientRect().bottom > 64 : false);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [pathname]);
 
   return (
     <header
       className={cn(
         "sticky top-0 z-50 border-b transition-colors duration-300",
-        scrolled ? "border-border bg-background/90 backdrop-blur" : "border-transparent bg-transparent",
+        overDark
+          ? scrolled
+            ? "border-white/10 bg-[#061327]/60 backdrop-blur-xl"
+            : "border-transparent bg-transparent"
+          : scrolled
+            ? "border-border bg-background/90 backdrop-blur"
+            : "border-transparent bg-transparent",
       )}
     >
       <nav aria-label="Primary" className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-4 md:px-8">
-        <Link href="/" className="text-lg font-semibold tracking-tight text-ink">
-          Hope<span className="text-primary">.</span>
+        <Link href="/" className={cn("text-lg font-semibold tracking-tight", overDark ? "text-white" : "text-ink")}>
+          Hope<span className={overDark ? "text-[#8b85ff]" : "text-primary"}>.</span>
         </Link>
 
         <ul className="hidden items-center gap-8 text-[15px] md:flex">
@@ -50,8 +66,14 @@ export default function Header() {
                 href={l.href}
                 aria-current={isActive(l.href) ? "page" : undefined}
                 className={cn(
-                  "transition-colors hover:text-ink",
-                  isActive(l.href) ? "font-medium text-ink" : "text-body",
+                  "inline-flex min-h-11 items-center transition-colors",
+                  overDark
+                    ? isActive(l.href)
+                      ? "font-medium text-white"
+                      : "text-[#c3cde1] hover:text-white"
+                    : isActive(l.href)
+                      ? "font-medium text-ink"
+                      : "text-body hover:text-ink",
                 )}
               >
                 {l.label}
@@ -62,7 +84,12 @@ export default function Header() {
             <Button
               asChild
               variant="outline"
-              className="h-9 rounded-full border-ink bg-transparent px-4 text-[15px] text-ink hover:bg-ink hover:text-background"
+              className={cn(
+                "h-9 rounded-full px-4 text-[15px]",
+                overDark
+                  ? "border-white/20 bg-white/[0.06] text-white hover:bg-white/15 hover:text-white"
+                  : "border-ink bg-transparent text-ink hover:bg-ink hover:text-background",
+              )}
             >
               <a href={site.resume} target="_blank" rel="noopener noreferrer">
                 Résumé <span className="arrow arrow-up" aria-hidden>↗</span>
@@ -73,7 +100,12 @@ export default function Header() {
 
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="md:hidden" aria-label="Open menu">
+            <Button
+              variant="ghost"
+              size="icon"
+              className={cn("md:hidden", overDark && "text-white hover:bg-white/10 hover:text-white")}
+              aria-label="Open menu"
+            >
               <MenuIcon className="size-5" />
             </Button>
           </SheetTrigger>

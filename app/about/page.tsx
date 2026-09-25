@@ -18,9 +18,25 @@ export default function AboutPage() {
                 Messy data, long-running jobs, integrations, and people who depend on it. That&apos;s the work
                 I&apos;m drawn to.
               </p>
-              <p>[TODO] Your path: Andela, AUCA Innovation Center, NetFella, then IFAD in Rome.</p>
-              <p>[TODO] Why you founded Trustplot and what it taught you.</p>
-              <p>[TODO] What you want to work on next, and that you&apos;re open to relocating.</p>
+              <p>
+                I started with multi-tenant Node.js and PostgreSQL APIs at Andela, then built real-time
+                telemetry pipelines at NetFella and Spring Boot services for academic and financial systems at
+                the AUCA Innovation Center (Mastercard Program). At IFAD, the UN&apos;s International Fund for
+                Agricultural Development in Rome, I built FastAPI services that ingest, read, review and archive
+                documents, with background workers on Azure Service Bus and the retry and recovery logic that
+                keeps them dependable.
+              </p>
+              <p>
+                In May 2026 I founded Trustplot because land and property information in Rwanda is scattered
+                and hard to verify. It brings parcel boundaries, zoning, risk and reference value into one UPI
+                search, built on PostGIS and ArcGIS data.
+              </p>
+              <p>
+                I hold a BSc (Honours) in Software Engineering with Distinction from the Adventist University of
+                Central Africa. Next, I want to join a backend team working on reliable, data-heavy systems. I&apos;m
+                a Rwandan citizen, ready to relocate, and familiar with the EU Blue Card and Dutch Highly Skilled
+                Migrant processes.
+              </p>
             </div>
           </div>
           <div className="md:col-span-4 md:col-start-9">
