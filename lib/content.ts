@@ -17,6 +17,7 @@ export type Project = {
   stack: string[];
   year: string;
   visual: string; // describes the placeholder until a real image exists
+  accent: "growth" | "energy" | "playful"; // one decorative color per project
   // Case-study body. Keep every claim defensible in an interview.
   caseStudy: { heading: string; body: string }[];
 };
@@ -37,6 +38,7 @@ export const flagship: Project = {
   stack: ["[TODO]", "[TODO]", "[TODO]"],
   year: "2026",
   visual: "Map / search results screenshot",
+  accent: "growth",
   caseStudy: caseStudyTodo,
 };
 
@@ -49,6 +51,7 @@ export const secondary: Project[] = [
     stack: ["FastAPI", "PostgreSQL", "Queue workers"],
     year: "[TODO]",
     visual: "Upload → queue → workers → storage",
+    accent: "energy",
     caseStudy: caseStudyTodo,
   },
   {
@@ -60,6 +63,7 @@ export const secondary: Project[] = [
     stack: ["Python", "LLM APIs", "[TODO]"],
     year: "[TODO]",
     visual: "Workflow diagram",
+    accent: "playful",
     caseStudy: caseStudyTodo,
   },
 ];

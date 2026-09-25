@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CapabilitiesGrid, ContactCTA, ExperienceList, Portrait, SectionLabel, container } from "@/components/ui";
+import { CapabilitiesGrid, ContactCTA, ExperienceList, Portrait, SectionLabel, container } from "@/components/site";
 
 export const metadata: Metadata = { title: "About — Hope Tuyishime" };
 
@@ -13,7 +13,7 @@ export default function AboutPage() {
             <h1 className="text-[clamp(32px,4vw,52px)] font-semibold leading-[1.1] tracking-[-0.02em]">
               I like problems where software has to keep working after the demo.
             </h1>
-            <div className="mt-8 max-w-xl space-y-5 text-[18px] leading-relaxed text-muted">
+            <div className="mt-8 max-w-xl space-y-5 text-[18px] leading-relaxed text-body">
               <p>
                 Messy data, long-running jobs, integrations, and people who depend on it. That&apos;s the work
                 I&apos;m drawn to.
@@ -29,14 +29,14 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="section border-t border-border">
+      <section className="section border-t">
         <div className={container}>
           <SectionLabel n="01">Capabilities</SectionLabel>
           <CapabilitiesGrid />
         </div>
       </section>
 
-      <section className="section border-t border-border">
+      <section className="section border-t">
         <div className={container}>
           <SectionLabel n="02">Experience</SectionLabel>
           <ExperienceList />

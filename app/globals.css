@@ -1,46 +1,125 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
+@custom-variant dark (&:is(.dark *));
+
+/*
+  Palette rules:
+  - ink / body / muted carry all text.
+  - primary is the only interactive color (links, buttons, focus rings).
+  - sky / joy / energy / playful / growth are decorative fills only: the hero
+    gradient, the CTA strip, and one accent per project card. Never text.
+*/
 :root {
-  --background: #f6f5f1;
-  --foreground: #111111;
-  --muted: #6b6b6b;
-  --border: #e4e2dc;
-  --surface: #ecebe6;
-  --accent: #1f5c45;
+  --ink: #0a2540;
+  --body: #425466;
+  --background: #f7f9fc;
+  --foreground: var(--ink);
+  --card: #ffffff;
+  --card-foreground: var(--ink);
+  --popover: #ffffff;
+  --popover-foreground: var(--ink);
+  --primary: #5046e4;
+  --primary-hover: #3f36c9;
+  --primary-foreground: #ffffff;
+  --secondary: #eef2f7;
+  --secondary-foreground: var(--ink);
+  --muted: #eef2f7;
+  --muted-foreground: #64748b;
+  --accent: #eef2f7;
+  --accent-foreground: var(--ink);
+  --destructive: #df1b41;
+  --border: #e5eaf0;
+  --input: #e5eaf0;
+  --ring: var(--primary);
+  --radius: 0.75rem;
+
+  --sky: #80e9ff;
+  --joy: #ffd84d;
+  --energy: #ff8a3d;
+  --playful: #ff6baa;
+  --growth: #42d392;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #111110;
-    --foreground: #edede9;
-    --muted: #9a9a94;
-    --border: #2a2a27;
-    --surface: #1b1b19;
-    --accent: #6fb596;
-  }
+/* Not switched on yet. Ready for when dark mode ships. */
+.dark {
+  --background: #0a2540;
+  --foreground: #f7f9fc;
+  --body: #c1cddb;
+  --card: #12304f;
+  --card-foreground: #f7f9fc;
+  --popover: #12304f;
+  --popover-foreground: #f7f9fc;
+  --primary: #8b85ff;
+  --primary-hover: #a5a0ff;
+  --primary-foreground: #0a2540;
+  --secondary: #12304f;
+  --secondary-foreground: #f7f9fc;
+  --muted: #12304f;
+  --muted-foreground: #9fb0c3;
+  --accent: #12304f;
+  --accent-foreground: #f7f9fc;
+  --border: #1f3d5c;
+  --input: #1f3d5c;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-ink: var(--ink);
+  --color-body: var(--body);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
-  --color-border: var(--border);
-  --color-surface: var(--surface);
+  --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sky: var(--sky);
+  --color-joy: var(--joy);
+  --color-energy: var(--energy);
+  --color-playful: var(--playful);
+  --color-growth: var(--growth);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-geist-sans);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 72px;
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
-  font-size: 18px;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
+    scroll-padding-top: 72px;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-size: 18px;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
 }
 
 /* Mono metadata: 13px, uppercase, wide tracking */
@@ -49,7 +128,7 @@ body {
   font-size: 13px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--muted-foreground);
 }
 
 .section {
@@ -58,6 +137,29 @@ body {
 @media (min-width: 768px) {
   .section {
     padding-block: 160px;
+  }
+}
+
+/* The brand gradient: sky → indigo → pink → orange → yellow */
+.brand-gradient {
+  background: linear-gradient(
+    100deg,
+    var(--sky) 0%,
+    var(--primary) 30%,
+    var(--playful) 55%,
+    var(--energy) 78%,
+    var(--joy) 100%
+  );
+  background-size: 200% 100%;
+  animation: gradient-drift 18s ease-in-out infinite alternate;
+}
+
+@keyframes gradient-drift {
+  from {
+    background-position: 0% 50%;
+  }
+  to {
+    background-position: 100% 50%;
   }
 }
 
@@ -90,13 +192,16 @@ a:focus-visible .arrow-up {
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--primary);
   outline-offset: 3px;
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  .brand-gradient {
+    animation: none;
   }
   .reveal {
     opacity: 1;

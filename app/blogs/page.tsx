@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PageHeader, PostList, container } from "@/components/ui";
+import { PageHeader, PostList, container } from "@/components/site";
 import { posts } from "@/lib/content";
 
 export const metadata: Metadata = { title: "Blogs — Hope Tuyishime" };
@@ -12,7 +12,7 @@ export default function WritingPage() {
         {posts.length > 0 ? (
           <PostList />
         ) : (
-          <p className="text-muted">First posts are in progress.</p>
+          <p className="text-body">First posts are in progress.</p>
         )}
       </section>
     </main>

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Reveal from "@/components/reveal";
-import { ContactCTA, PageHeader, ProjectCard, container } from "@/components/ui";
+import { ContactCTA, PageHeader, ProjectCard, container } from "@/components/site";
 import { flagship, secondary } from "@/lib/content";
 
 export const metadata: Metadata = { title: "Work — Hope Tuyishime" };

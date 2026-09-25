@@ -3,6 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { MenuIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
 import { site } from "@/lib/content";
 
 const links = [
@@ -29,13 +33,14 @@ export default function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 border-b transition-colors duration-300 ${
-        scrolled || open ? "border-border bg-background" : "border-transparent bg-transparent"
-      }`}
+      className={cn(
+        "sticky top-0 z-50 border-b transition-colors duration-300",
+        scrolled ? "border-border bg-background/90 backdrop-blur" : "border-transparent bg-transparent",
+      )}
     >
       <nav aria-label="Primary" className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-4 md:px-8">
-        <Link href="/" className="text-lg font-semibold tracking-tight">
-          Hope<span className="text-accent">.</span>
+        <Link href="/" className="text-lg font-semibold tracking-tight text-ink">
+          Hope<span className="text-primary">.</span>
         </Link>
 
         <ul className="hidden items-center gap-8 text-[15px] md:flex">
@@ -44,59 +49,58 @@ export default function Header() {
               <Link
                 href={l.href}
                 aria-current={isActive(l.href) ? "page" : undefined}
-                className={`transition-colors hover:text-foreground ${isActive(l.href) ? "text-foreground" : "text-muted"}`}
+                className={cn(
+                  "transition-colors hover:text-ink",
+                  isActive(l.href) ? "font-medium text-ink" : "text-body",
+                )}
               >
                 {l.label}
               </Link>
             </li>
           ))}
           <li>
-            <a
-              href={site.resume}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-full border border-foreground px-4 py-1.5 transition-colors hover:bg-foreground hover:text-background"
+            <Button
+              asChild
+              variant="outline"
+              className="h-9 rounded-full border-ink bg-transparent px-4 text-[15px] text-ink hover:bg-ink hover:text-white"
             >
-              Résumé <span className="arrow arrow-up" aria-hidden>↗</span>
-            </a>
+              <a href={site.resume} target="_blank" rel="noopener noreferrer">
+                Résumé <span className="arrow arrow-up" aria-hidden>↗</span>
+              </a>
+            </Button>
           </li>
         </ul>
 
-        <button
-          type="button"
-          className="meta !text-foreground md:hidden"
-          aria-expanded={open}
-          aria-controls="mobile-menu"
-          onClick={() => setOpen((o) => !o)}
-        >
-          {open ? "Close" : "Menu"}
-        </button>
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon" className="md:hidden" aria-label="Open menu">
+              <MenuIcon className="size-5" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-72 bg-background px-6 pt-16">
+            <SheetTitle className="meta">Menu</SheetTitle>
+            <ul className="mt-2 flex flex-col gap-1 text-[22px] font-semibold tracking-tight">
+              {links.map((l) => (
+                <li key={l.href}>
+                  <Link
+                    href={l.href}
+                    aria-current={isActive(l.href) ? "page" : undefined}
+                    className={cn("block py-2", isActive(l.href) ? "text-primary" : "text-ink")}
+                    onClick={() => setOpen(false)}
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <Button asChild className="mt-6 h-11 rounded-full text-[16px] hover:bg-primary-hover">
+              <a href={site.resume} target="_blank" rel="noopener noreferrer">
+                Résumé ↗
+              </a>
+            </Button>
+          </SheetContent>
+        </Sheet>
       </nav>
-
-      {open && (
-        <ul
-          id="mobile-menu"
-          className="mx-auto grid max-w-[1200px] grid-cols-2 gap-x-4 gap-y-3 px-4 pb-5 text-[17px] md:hidden"
-        >
-          {links.map((l) => (
-            <li key={l.href}>
-              <Link
-                href={l.href}
-                aria-current={isActive(l.href) ? "page" : undefined}
-                className={isActive(l.href) ? "text-accent" : ""}
-                onClick={() => setOpen(false)}
-              >
-                {l.label}
-              </Link>
-            </li>
-          ))}
-          <li>
-            <a href={site.resume} target="_blank" rel="noopener noreferrer">
-              Résumé ↗
-            </a>
-          </li>
-        </ul>
-      )}
     </header>
   );
 }

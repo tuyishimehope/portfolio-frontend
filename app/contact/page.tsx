@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { container } from "@/components/ui";
+import { Button } from "@/components/ui/button";
+import { container, pillPrimary } from "@/components/site";
 import { site } from "@/lib/content";
 
 export const metadata: Metadata = { title: "Contact — Hope Tuyishime" };
@@ -18,21 +19,20 @@ export default function ContactPage() {
       <h1 className="max-w-[16ch] text-[clamp(40px,6vw,80px)] font-semibold leading-[1.03] tracking-[-0.03em]">
         Building something that has to work?
       </h1>
-      <p className="mt-8 max-w-2xl text-[20px] leading-relaxed text-muted">
+      <p className="mt-8 max-w-2xl text-[20px] leading-relaxed text-body">
         Based in {site.location} and open to relocation. The fastest way to reach me is email.
       </p>
-      <a
-        href={`mailto:${site.email}`}
-        className="mt-10 self-start rounded-full bg-accent px-6 py-3 text-[16px] text-background transition-opacity hover:opacity-90"
-      >
+      <Button asChild size="lg" className={`${pillPrimary} mt-10 self-start`}>
+        <a href={`mailto:${site.email}`}>
         Let&apos;s talk <span className="arrow arrow-right" aria-hidden>→</span>
-      </a>
-      <dl className="mt-20 border-t border-border">
+        </a>
+      </Button>
+      <dl className="mt-20 border-t">
         {channels.map((c) => (
-          <div key={c.label} className="grid gap-1 border-b border-border py-5 md:grid-cols-12 md:gap-8">
+          <div key={c.label} className="grid gap-1 border-b py-5 md:grid-cols-12 md:gap-8">
             <dt className="meta md:col-span-3 md:pt-1">{c.label}</dt>
             <dd className="md:col-span-9">
-              <a href={c.href} className="hover:text-accent">
+              <a href={c.href} className="hover:text-primary">
                 {c.value}
               </a>
             </dd>
