@@ -8,7 +8,7 @@ import Reveal from "@/components/reveal";
 import ThemeSwitcher from "@/components/theme-switcher";
 import { container } from "@/components/site";
 import { cn } from "@/lib/utils";
-import { projects, site } from "@/lib/content";
+import { posts, projects, site } from "@/lib/content";
 import { analyticsEnabled, openConsentSettings } from "@/lib/analytics";
 
 // Lucide dropped brand marks, so these two are inline.
@@ -50,7 +50,7 @@ const columns = [
       { href: "/", label: "Home" },
       { href: "/projects", label: "Work" },
       { href: "/about", label: "About" },
-      { href: "/blogs", label: "Blogs" },
+      ...(posts.length ? [{ href: "/blogs", label: "Blogs" }] : []),
       { href: "/contact", label: "Contact" },
     ],
   },

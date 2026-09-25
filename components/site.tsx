@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowUpRight, Container, Database, GraduationCap, MapPin, Server, Sparkles, type LucideIcon } from "lucide-react";
 import type { CSSProperties } from "react";
 import AutoVideo from "@/components/auto-video";
+import PipelineDiagram from "@/components/pipeline-diagram";
 import Reveal from "@/components/reveal";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -91,6 +92,23 @@ export function ProjectVisual({
   full?: boolean; // case-study view: whole shot, uncropped, video with controls
 }) {
   const { media } = project;
+
+  // Diagrams: drawn, not photographed. Full size on case studies, compact in card frames.
+  if (media?.type === "diagram") {
+    return full ? (
+      <div className={cn("p-4 md:p-12", accentStyles[project.accent].tint)}>
+        <div className="rounded-lg bg-background/70 p-4 ring-1 ring-ink/10 backdrop-blur md:p-8">
+          <PipelineDiagram pipeline={media.pipeline} label={media.label} />
+        </div>
+      </div>
+    ) : (
+      <div className={cn("relative w-full overflow-hidden", accentStyles[project.accent].tint, tall ? "aspect-[16/10] md:aspect-[21/9]" : "aspect-[4/3]")}>
+        <div className="absolute inset-x-5 top-5 bottom-0 overflow-hidden rounded-t-lg bg-background/80 p-4 shadow-[0_18px_40px_-18px_rgb(10_37_64/0.35)] ring-1 ring-ink/10 transition-transform duration-300 group-hover:-translate-y-1 md:inset-x-8 md:top-8">
+          <PipelineDiagram pipeline={media.pipeline} label={media.label} compact />
+        </div>
+      </div>
+    );
+  }
 
   if (media && full) {
     return (
@@ -465,7 +483,7 @@ export function AboutBento() {
         <Card className={tile}>
           <BentoIcon icon={MapPin} />
           <h3 className="mt-5 text-lg font-semibold tracking-tight">{site.location}</h3>
-          <p className="mt-1 text-[15px] font-medium text-primary">Open to relocation</p>
+          <p className="mt-1 text-[15px] font-medium text-primary">{facts.sponsorship}</p>
           <p className="mt-3 text-[13px] leading-relaxed text-muted-foreground">{facts.relocation}</p>
         </Card>
       </Reveal>

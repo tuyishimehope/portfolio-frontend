@@ -3,7 +3,12 @@ import Reveal from "@/components/reveal";
 import { PageHeader, ProjectCard, container } from "@/components/site";
 import { flagship, secondary } from "@/lib/content";
 
-export const metadata: Metadata = { title: "Work — Hope Tuyishime" };
+export const metadata: Metadata = {
+  title: "Work — Hope Tuyishime",
+  description: "Case studies: Trustplot (land intelligence for Rwanda), document intelligence at IFAD, and DocFlow, an asynchronous AI document-processing backend.",
+  alternates: { canonical: "/projects" },
+  openGraph: { title: "Work — Hope Tuyishime", description: "Case studies: Trustplot (land intelligence for Rwanda), document intelligence at IFAD, and DocFlow, an asynchronous AI document-processing backend.", url: "/projects" },
+};
 
 export default function WorkPage() {
   return (

@@ -16,10 +16,27 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Absolute URLs for social previews. Set NEXT_PUBLIC_SITE_URL once you have your own domain.
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000");
+
+const description =
+  "Backend engineer in Kigali building reliable systems: APIs, asynchronous workflows and AI-powered products. Previously IFAD (UN, Rome). Open to relocation.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Hope Tuyishime — Backend Engineer",
-  description:
-    "Backend engineer in Kigali building reliable systems for real-world problems. Open to relocation.",
+  description,
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: "Hope Tuyishime",
+    title: "Hope Tuyishime — Backend Engineer",
+    description,
+    url: "/",
+  },
+  twitter: { card: "summary_large_image", title: "Hope Tuyishime — Backend Engineer", description },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

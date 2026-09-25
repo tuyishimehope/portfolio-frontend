@@ -22,7 +22,6 @@ const focus = [
   { icon: Briefcase, title: "Previously", text: "IFAD, Rome" },
 ];
 
-const credits = ["IFAD (UN agency, Rome)", "Andela", "NetFella", "AUCA Innovation Center", "Founder, Trustplot"];
 
 export default function Hero() {
   return (
@@ -55,8 +54,8 @@ export default function Hero() {
             className={cn(enter, "slide-in-from-bottom-4 mt-7 max-w-xl text-[19px] leading-relaxed text-[#b8c4d9]")}
             style={after(350)}
           >
-            I&apos;m Hope. I design APIs, data pipelines, and AI-powered products with Python, FastAPI, and
-            PostgreSQL.
+            I&apos;m Hope. I design and build backend systems, asynchronous workflows, and AI-powered products,
+            from architecture to deployment.
           </p>
           <p
             className={cn(enter, "mt-6 font-mono text-[12px] tracking-[0.08em] text-[#95a7c7] uppercase")}
@@ -119,8 +118,8 @@ export default function Hero() {
                 <div className={cn(enter, "slide-in-from-bottom-6 duration-1000")} style={after(900)}>
                   <div className="auth-card animate-float rounded-3xl p-4 motion-reduce:animate-none">
                     <div className="flex items-center gap-3">
-                      <span className="auth-emblem flex size-11 shrink-0 items-center justify-center rounded-2xl text-lg font-semibold">
-                        T<span className="text-[#8b85ff]">.</span>
+                      <span className="auth-emblem flex size-11 shrink-0 items-center justify-center rounded-2xl">
+                        <Image src="/trustplot-logo.png" alt="Trustplot logo" width={32} height={32} className="size-8" />
                       </span>
                       <div className="min-w-0 flex-1">
                         <p className="text-[11px] text-[#a9b5cb]">Currently building</p>
@@ -153,15 +152,6 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Credibility row, set into the bottom of the scene */}
-      <div className="border-t border-white/10">
-        <div className={cn(container, "flex flex-wrap items-center gap-x-6 gap-y-2 py-6 font-mono text-[12px] tracking-[0.08em] text-[#95a7c7] uppercase")}>
-          <span className="text-[#a9d8ff]">Experience</span>
-          {credits.map((c) => (
-            <span key={c}>{c}</span>
-          ))}
-        </div>
-      </div>
     </section>
   );
 }

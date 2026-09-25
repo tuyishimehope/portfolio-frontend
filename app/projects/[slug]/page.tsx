@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArrowUpRight, Code2 } from "lucide-react";
+import PipelineDiagram from "@/components/pipeline-diagram";
 import Reveal from "@/components/reveal";
 import { AccentLabel, BackLink, ProjectVisual, StackBadges, after, container, enter } from "@/components/site";
 import { cn } from "@/lib/utils";
@@ -15,7 +17,16 @@ export const dynamicParams = false;
 export async function generateMetadata(props: PageProps<"/projects/[slug]">): Promise<Metadata> {
   const { slug } = await props.params;
   const project = projects.find((p) => p.slug === slug);
-  return { title: project ? `${project.title} — Hope Tuyishime` : "Project" };
+  if (!project) return { title: "Project" };
+  const title = `${project.title} — Hope Tuyishime`;
+  const description = `${project.problem} ${project.role}${project.year ? `, ${project.year}` : ""}. Stack: ${project.stack.join(", ")}.`;
+  return {
+    title,
+    description,
+    alternates: { canonical: `/projects/${project.slug}` },
+    openGraph: { type: "article", title, description, url: `/projects/${project.slug}` },
+    twitter: { card: "summary_large_image", title, description },
+  };
 }
 
 export default async function CaseStudyPage(props: PageProps<"/projects/[slug]">) {
@@ -43,6 +54,18 @@ export default async function CaseStudyPage(props: PageProps<"/projects/[slug]">
           <div className="md:col-span-4 md:col-start-9">
             <p className="meta mb-3">Stack</p>
             <StackBadges project={project} />
+            {project.repo && (
+              <a
+                href={project.repo}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group mt-5 inline-flex min-h-11 items-center gap-2 rounded-full border px-4 text-[15px] font-medium transition-colors hover:border-primary/40 hover:text-primary"
+              >
+                <Code2 className="size-4" aria-hidden />
+                View code on GitHub
+                <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden />
+              </a>
+            )}
           </div>
         </div>
       </section>
@@ -53,13 +76,34 @@ export default async function CaseStudyPage(props: PageProps<"/projects/[slug]">
         </div>
       </div>
 
+      {project.architecture && (
+        <section className={`${container} pt-16 md:pt-24`}>
+          <p className="meta mb-6">Architecture</p>
+          <div className="rounded-2xl border bg-card p-4 md:p-8">
+            <PipelineDiagram pipeline={project.architecture} label={`${project.title} architecture`} />
+          </div>
+        </section>
+      )}
+
       <article className={`${container} section`}>
         {project.caseStudy.map((s, i) => (
           <Reveal key={s.heading} className="grid gap-4 border-t py-12 md:grid-cols-12 md:gap-8">
-            <p className="meta md:col-span-3 md:pt-1.5">
+            <h2 className="meta md:col-span-3 md:pt-1.5">
               {String(i + 1).padStart(2, "0")} / {s.heading}
-            </p>
-            <p className="text-[20px] leading-relaxed md:col-span-8">{s.body}</p>
+            </h2>
+            <div className="md:col-span-8">
+              <p className="text-[20px] leading-relaxed">{s.body}</p>
+              {s.points && (
+                <ul className="mt-6 space-y-3">
+                  {s.points.map((point) => (
+                    <li key={point} className="flex gap-3 text-[17px] leading-relaxed text-body">
+                      <span aria-hidden className="mt-[0.7em] size-1.5 shrink-0 rounded-full bg-primary" />
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </Reveal>
         ))}
       </article>

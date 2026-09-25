@@ -10,9 +10,19 @@ export const site = {
   location: "Kigali, Rwanda",
 };
 
+/** Architecture as data: the fast request path, the queue, the background stages, the stores. */
+export type Pipeline = {
+  request: string[]; // what happens inside the HTTP request
+  response: string; // what the client gets back immediately
+  queue: string;
+  stages: string[]; // background worker steps, in order
+  stores: string[];
+};
+
 export type ProjectMedia =
   | { type: "image"; src: string; alt: string; width: number; height: number }
-  | { type: "video"; src: string; label: string };
+  | { type: "video"; src: string; label: string }
+  | { type: "diagram"; label: string; pipeline: Pipeline };
 
 export type Project = {
   slug: string;
@@ -24,8 +34,10 @@ export type Project = {
   visual: string; // describes the placeholder until a real image exists
   media?: ProjectMedia; // real screenshot or screen recording; falls back to the placeholder
   accent: "growth" | "energy" | "playful"; // one decorative color per project
+  repo?: string; // public source code
+  architecture?: Pipeline; // shown on the case study when the main media isn't already a diagram
   // Case-study body. Keep every claim defensible in an interview.
-  caseStudy: { heading: string; body: string }[];
+  caseStudy: { heading: string; body: string; points?: string[] }[];
 };
 
 export const flagship: Project = {
@@ -68,28 +80,55 @@ export const secondary: Project[] = [
   {
     slug: "docflow",
     title: "DocFlow",
-    problem: "Long-running document analysis shouldn’t block the API that receives the documents.",
-    role: "Personal project",
-    stack: ["Celery", "Redis", "Docker"],
+    problem: "Long-running AI document analysis shouldn’t block, or break, the API that receives the documents.",
+    role: "Personal project · sole engineer",
+    stack: ["FastAPI", "Celery + Redis", "PostgreSQL"],
+    year: "2026",
     visual: "Upload → queue → workers → storage",
     media: { type: "video", src: "/projects/docflow.mp4", label: "DocFlow screen recording" },
     accent: "energy",
+    repo: "https://github.com/tuyishimehope/DOC-FLOW",
+    architecture: {
+      request: ["Upload", "Validate type", "Store file in MinIO", "Create request"],
+      response: "201 · status QUEUED",
+      queue: "Redis → Celery",
+      stages: ["Extract text (PDF · DOCX · Tesseract OCR)", "Summarise / extract with OpenAI", "Save result + job attempt"],
+      stores: ["PostgreSQL", "MinIO"],
+    },
     caseStudy: [
       {
         heading: "Context",
-        body: "AI document analysis (OCR, extraction) can take far longer than a web request should. Running it inside the request makes the API slow and fragile.",
+        body: "OCR and model calls take seconds to minutes; an HTTP request shouldn’t. DocFlow is a reusable reference implementation of the asynchronous pattern I ran in production at IFAD, rebuilt from scratch in the open.",
       },
       {
         heading: "What I built",
-        body: "A distributed AI document-processing platform. Uploads return immediately; Celery workers on Redis pick up the analysis as background jobs.",
+        body: "A FastAPI backend where users upload PDFs, DOCX files or images and ask for a summary, invoice extraction or contract metadata. The upload returns straight away; Celery workers on Redis do the heavy work, and PostgreSQL tracks every request and attempt.",
+        points: [
+          "JWT authentication, per-user documents and files, and email-based password reset.",
+          "Originals stored in MinIO (S3-compatible); metadata, requests, job attempts and results in PostgreSQL, with Alembic migrations.",
+          "Text extraction with pypdf, python-docx and Tesseract OCR, then OpenAI for the requested analysis.",
+          "Everything runs locally with Docker Compose: API, worker, PostgreSQL, Redis and MinIO.",
+        ],
       },
       {
-        heading: "Hard parts",
-        body: "Keeping long-running analysis entirely outside the request–response cycle, and containerising every service with Docker so the whole pipeline runs the same way on any machine.",
+        heading: "Engineering decisions",
+        body: "The questions a reviewer should ask of any job system, and how DocFlow answers them today:",
+        points: [
+          "Why Celery and Redis? A mature Python task queue with retries and backoff built in, and Redis doubles as broker and result backend, so the local stack stays small.",
+          "How does the client know a job finished? Each request moves QUEUED → PROCESSING → COMPLETED or FAILED in PostgreSQL. Clients poll the status endpoint; the result endpoint returns 404 until the result exists.",
+          "How are duplicate results prevented? The database allows exactly one stored result per processing request, and every attempt is recorded with its attempt number.",
+          "What happens when a worker dies mid-job? Today the request stays in PROCESSING: tasks are acknowledged when received, so a crashed worker’s task isn’t redelivered. That is the first thing on the list below.",
+        ],
       },
       {
-        heading: "Outcome",
-        body: "A containerised reference implementation of the asynchronous processing pattern I also used in production at IFAD.",
+        heading: "What I’d harden next",
+        body: "Written down deliberately. These are the gaps between a working reference and a production service:",
+        points: [
+          "Late acknowledgement (acks_late + reject_on_worker_lost) plus a sweeper that re-queues requests stuck in PROCESSING.",
+          "Let failures reach Celery’s retry policy: the task currently records a failure instead of re-raising it, so its declared retries never fire.",
+          "Idempotency keys on upload, so a client retrying a slow request can’t create a second job.",
+          "Push completion (webhook or server-sent events) instead of polling, and validated structured output for invoices and contracts.",
+        ],
       },
     ],
   },
@@ -101,6 +140,17 @@ export const secondary: Project[] = [
     stack: ["FastAPI", "PostgreSQL", "Azure Service Bus"],
     year: "2025–26",
     visual: "Ingest → OCR → extraction → human review → archive",
+    media: {
+      type: "diagram",
+      label: "IFAD document pipeline: FastAPI accepts the document, Azure Service Bus queues the work, background workers run OCR, extraction, human review and archival",
+      pipeline: {
+        request: ["Ingest document", "Validate", "Create record"],
+        response: "Accepted in <200 ms",
+        queue: "Azure Service Bus",
+        stages: ["OCR", "Information extraction", "Human review", "Archive"],
+        stores: ["PostgreSQL"],
+      },
+    },
     accent: "playful",
     caseStudy: [
       {
@@ -187,15 +237,16 @@ export const experience: Experience[] = [
 // Short facts for the bento tiles (all from the résumé).
 export const facts = {
   education: {
-    degree: "BSc (Honours) Software Engineering",
+    degree: "Bachelor of Science (Honours) in Software Engineering",
     honours: "Distinction",
     school: "Adventist University of Central Africa",
     year: "2025",
   },
-  relocation: "Rwandan citizen · familiar with EU Blue Card and Dutch Highly Skilled Migrant routes",
+  sponsorship: "Requires visa sponsorship · Open to relocation within the EU",
+  relocation: "Rwandan citizen · familiar with the EU Blue Card and Dutch Highly Skilled Migrant processes",
+  // Homepage leads with the two strongest numbers; volume (~100 docs/day) stays in the case study.
   impact: [
-    { value: "~100", label: "documents a day through the IFAD pipeline" },
-    { value: "<200 ms", label: "API responses while analysis ran in the background" },
+    { value: "<200 ms", label: "API responses while document analysis ran in the background" },
     { value: "−60%", label: "failed jobs after retry and recovery work" },
   ],
 };

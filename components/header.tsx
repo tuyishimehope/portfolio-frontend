@@ -7,13 +7,13 @@ import { MenuIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import { site } from "@/lib/content";
+import { posts, site } from "@/lib/content";
 
 const links = [
   { href: "/", label: "Home" },
   { href: "/projects", label: "Work" },
   { href: "/about", label: "About" },
-  { href: "/blogs", label: "Blogs" },
+  ...(posts.length ? [{ href: "/blogs", label: "Blogs" }] : []),
   { href: "/contact", label: "Contact" },
 ];
 

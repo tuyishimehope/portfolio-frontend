@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import { CapabilitiesGrid, ExperienceList, Portrait, SectionLabel, container } from "@/components/site";
 
-export const metadata: Metadata = { title: "About — Hope Tuyishime" };
+export const metadata: Metadata = {
+  title: "About — Hope Tuyishime",
+  description: "Backend engineer from Kigali: Andela, NetFella, AUCA Innovation Center, then IFAD in Rome; now founder of Trustplot. Requires visa sponsorship; open to relocation within the EU.",
+  alternates: { canonical: "/about" },
+  openGraph: { title: "About — Hope Tuyishime", description: "Backend engineer from Kigali: Andela, NetFella, AUCA Innovation Center, then IFAD in Rome; now founder of Trustplot. Requires visa sponsorship; open to relocation within the EU.", url: "/about" },
+};
 
 export default function AboutPage() {
   return (
@@ -32,10 +37,10 @@ export default function AboutPage() {
                 search, built on PostGIS and ArcGIS data.
               </p>
               <p>
-                I hold a BSc (Honours) in Software Engineering with Distinction from the Adventist University of
-                Central Africa. Next, I want to join a backend team working on reliable, data-heavy systems. I&apos;m
-                a Rwandan citizen, ready to relocate, and familiar with the EU Blue Card and Dutch Highly Skilled
-                Migrant processes.
+                I hold a Bachelor of Science (Honours) in Software Engineering, Distinction, from the Adventist
+                University of Central Africa. Next, I want to join a backend team working on reliable, data-heavy
+                systems. I&apos;m a Rwandan citizen, so I require visa sponsorship; I&apos;m open to relocating within
+                the EU and familiar with the EU Blue Card and Dutch Highly Skilled Migrant processes.
               </p>
             </div>
           </div>
