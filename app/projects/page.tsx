@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Reveal from "@/components/reveal";
-import { ContactCTA, PageHeader, ProjectCard, container } from "@/components/site";
+import { PageHeader, ProjectCard, container } from "@/components/site";
 import { flagship, secondary } from "@/lib/content";
 
 export const metadata: Metadata = { title: "Work — Hope Tuyishime" };
@@ -25,7 +25,6 @@ export default function WorkPage() {
           ))}
         </div>
       </section>
-      <ContactCTA />
     </main>
   );
 }

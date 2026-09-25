@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CapabilitiesGrid, ContactCTA, ExperienceList, Portrait, SectionLabel, container } from "@/components/site";
+import { CapabilitiesGrid, ExperienceList, Portrait, SectionLabel, container } from "@/components/site";
 
 export const metadata: Metadata = { title: "About — Hope Tuyishime" };
 
@@ -42,8 +42,6 @@ export default function AboutPage() {
           <ExperienceList />
         </div>
       </section>
-
-      <ContactCTA />
     </main>
   );
 }

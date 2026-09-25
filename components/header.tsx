@@ -62,7 +62,7 @@ export default function Header() {
             <Button
               asChild
               variant="outline"
-              className="h-9 rounded-full border-ink bg-transparent px-4 text-[15px] text-ink hover:bg-ink hover:text-white"
+              className="h-9 rounded-full border-ink bg-transparent px-4 text-[15px] text-ink hover:bg-ink hover:text-background"
             >
               <a href={site.resume} target="_blank" rel="noopener noreferrer">
                 Résumé <span className="arrow arrow-up" aria-hidden>↗</span>

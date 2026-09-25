@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
+import AutoVideo from "@/components/auto-video";
 import Reveal from "@/components/reveal";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
@@ -13,7 +13,7 @@ export const container = "mx-auto w-full max-w-[1200px] px-4 md:px-8";
 // Pill buttons on top of shadcn's Button. Primary is the only filled interactive color.
 export const pill = "h-11 rounded-full px-6 text-[16px]";
 export const pillPrimary = cn(pill, "hover:bg-primary-hover");
-export const pillOutline = cn(pill, "border-ink bg-transparent text-ink hover:bg-ink hover:text-white");
+export const pillOutline = cn(pill, "border-ink bg-transparent text-ink hover:bg-ink hover:text-background");
 
 // Static class names so Tailwind can see them. Accents are decoration only.
 const accentStyles: Record<Project["accent"], { tint: string; dot: string }> = {
@@ -54,18 +54,81 @@ export function PageHeader({ label, title, intro }: { label: string; title: stri
   );
 }
 
-// Tinted stand-in until real screenshots / diagrams exist.
-export function ProjectVisual({ project, tall }: { project: Project; tall?: boolean }) {
-  return (
-    <div className="overflow-hidden">
-      <div
-        className={cn(
-          "flex w-full items-center justify-center transition-transform duration-300 group-hover:scale-[1.02]",
-          accentStyles[project.accent].tint,
-          tall ? "aspect-[16/10] md:aspect-[21/9]" : "aspect-[4/3]",
-        )}
-      >
+// Real media sits inset in a tinted frame, top-anchored and cropped at the bottom
+// (Stripe-style product shot). Without media, a labelled placeholder stands in.
+export function ProjectVisual({
+  project,
+  tall,
+  full,
+}: {
+  project: Project;
+  tall?: boolean;
+  full?: boolean; // case-study view: whole shot, uncropped, video with controls
+}) {
+  const { media } = project;
+
+  if (media && full) {
+    return (
+      <div className={cn("p-4 md:p-12", accentStyles[project.accent].tint)}>
+        <div className="overflow-hidden rounded-lg bg-card shadow-[0_18px_40px_-18px_rgb(10_37_64/0.35)] ring-1 ring-ink/10">
+          {media.type === "image" ? (
+            <Image
+              src={media.src}
+              alt={media.alt}
+              width={media.width}
+              height={media.height}
+              sizes="(min-width: 1200px) 1040px, 100vw"
+              className="h-auto w-full"
+              priority
+            />
+          ) : (
+            <AutoVideo src={media.src} label={media.label} controls className="aspect-video w-full" />
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  const frame = cn(
+    "relative w-full overflow-hidden",
+    accentStyles[project.accent].tint,
+    tall || full ? "aspect-[16/10] md:aspect-[21/9]" : "aspect-[4/3]",
+  );
+
+  if (!media) {
+    return (
+      <div className={cn(frame, "flex items-center justify-center")}>
         <span className="meta px-6 text-center">[Visual] {project.visual}</span>
+      </div>
+    );
+  }
+
+  const shot =
+    "overflow-hidden rounded-t-lg shadow-[0_18px_40px_-18px_rgb(10_37_64/0.35)] ring-1 ring-ink/10 transition-transform duration-300 group-hover:scale-[1.02] group-hover:-translate-y-1";
+
+  return (
+    <div className={frame}>
+      <div className={cn("absolute inset-x-5 top-5 bottom-0 md:inset-x-10 md:top-10", tall && "md:inset-x-16")}>
+        {media.type === "image" ? (
+          <div className={cn(shot, "relative h-full w-full bg-card")}>
+            <Image
+              src={media.src}
+              alt={media.alt}
+              fill
+              sizes={tall ? "(min-width: 1200px) 1100px, 100vw" : "(min-width: 768px) 560px, 100vw"}
+              className="object-cover object-top"
+              priority={tall}
+            />
+          </div>
+        ) : (
+          <div className={cn(shot, "h-full w-full bg-card")}>
+            <AutoVideo
+              src={media.src}
+              label={media.label}
+              className="h-full w-full object-cover object-top"
+            />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -210,50 +273,5 @@ export function PostList({ limit }: { limit?: number }) {
         </li>
       ))}
     </ul>
-  );
-}
-
-// Navy block with a thin gradient strip on top; flows straight into the navy footer.
-export function ContactCTA() {
-  return (
-    <section className="relative bg-ink text-white">
-      <div className="brand-gradient absolute inset-x-0 top-0 h-1" aria-hidden />
-      <div className={`${container} flex min-h-[50vh] flex-col justify-center py-24`}>
-        <Reveal>
-          <h2 className="max-w-[16ch] text-[clamp(40px,5.5vw,72px)] font-semibold leading-[1.05] tracking-[-0.03em]">
-            Building something that has to work?
-          </h2>
-          <div className="mt-10 flex flex-wrap items-center gap-6">
-            <Button asChild size="lg" className={pillPrimary}>
-              <a href={`mailto:${site.email}`}>
-                Let&apos;s talk <span className="arrow arrow-right" aria-hidden>→</span>
-              </a>
-            </Button>
-            <span className="font-mono text-[15px] text-white/70">{site.email}</span>
-          </div>
-        </Reveal>
-      </div>
-    </section>
-  );
-}
-
-export function Footer() {
-  return (
-    <footer className="bg-ink text-white/70">
-      <div className={`${container} border-t border-white/10`}>
-        <div className="meta flex flex-col gap-4 py-10 !text-white/70 md:flex-row md:items-center md:justify-between">
-          <span className="text-white">{site.name}</span>
-          <ul className="flex gap-6">
-            <li><a href={site.linkedin} className="hover:text-white">LinkedIn</a></li>
-            <li><a href={site.github} className="hover:text-white">GitHub</a></li>
-            <li><a href={`mailto:${site.email}`} className="hover:text-white">Email</a></li>
-          </ul>
-          <span>{site.location} · 2026</span>
-          <a href="#top" className="hover:text-white">
-            Back to top <span className="arrow arrow-up" aria-hidden>↑</span>
-          </a>
-        </div>
-      </div>
-    </footer>
   );
 }

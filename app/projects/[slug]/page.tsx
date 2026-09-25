@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Reveal from "@/components/reveal";
-import { AccentLabel, ContactCTA, ProjectVisual, StackBadges, container } from "@/components/site";
+import { AccentLabel, ProjectVisual, StackBadges, container } from "@/components/site";
 import { projects } from "@/lib/content";
 
 export function generateStaticParams() {
@@ -47,7 +47,7 @@ export default async function CaseStudyPage(props: PageProps<"/projects/[slug]">
 
       <div className={container}>
         <div className="overflow-hidden rounded-xl border bg-card">
-          <ProjectVisual project={project} tall />
+          <ProjectVisual project={project} full />
         </div>
       </div>
 
@@ -71,8 +71,6 @@ export default async function CaseStudyPage(props: PageProps<"/projects/[slug]">
           {next.title} <span className="arrow arrow-right text-primary" aria-hidden>→</span>
         </Link>
       </section>
-
-      <ContactCTA />
     </main>
   );
 }

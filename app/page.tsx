@@ -2,7 +2,6 @@ import Reveal from "@/components/reveal";
 import { Button } from "@/components/ui/button";
 import {
   CapabilitiesGrid,
-  ContactCTA,
   ExperienceList,
   MoreLink,
   Portrait,
@@ -119,8 +118,6 @@ export default function Home() {
           </div>
         </section>
       )}
-
-      <ContactCTA />
     </main>
   );
 }

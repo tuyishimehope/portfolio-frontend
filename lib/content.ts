@@ -9,6 +9,10 @@ export const site = {
   location: "Kigali, Rwanda",
 };
 
+export type ProjectMedia =
+  | { type: "image"; src: string; alt: string; width: number; height: number }
+  | { type: "video"; src: string; label: string };
+
 export type Project = {
   slug: string;
   title: string;
@@ -17,6 +21,7 @@ export type Project = {
   stack: string[];
   year: string;
   visual: string; // describes the placeholder until a real image exists
+  media?: ProjectMedia; // real screenshot or screen recording; falls back to the placeholder
   accent: "growth" | "energy" | "playful"; // one decorative color per project
   // Case-study body. Keep every claim defensible in an interview.
   caseStudy: { heading: string; body: string }[];
@@ -38,6 +43,13 @@ export const flagship: Project = {
   stack: ["[TODO]", "[TODO]", "[TODO]"],
   year: "2026",
   visual: "Map / search results screenshot",
+  media: {
+    type: "image",
+    src: "/projects/trustplot.webp",
+    alt: "Trustplot property workspace: satellite map with a parcel boundary and site intelligence for parcel 11337 in Kanombe, Kicukiro",
+    width: 2000,
+    height: 1200,
+  },
   accent: "growth",
   caseStudy: caseStudyTodo,
 };
@@ -51,6 +63,7 @@ export const secondary: Project[] = [
     stack: ["FastAPI", "PostgreSQL", "Queue workers"],
     year: "[TODO]",
     visual: "Upload → queue → workers → storage",
+    media: { type: "video", src: "/projects/docflow.mp4", label: "DocFlow screen recording" },
     accent: "energy",
     caseStudy: caseStudyTodo,
   },
