@@ -1,26 +1,111 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f6f5f1;
+  --foreground: #111111;
+  --muted: #6b6b6b;
+  --border: #e4e2dc;
+  --surface: #ecebe6;
+  --accent: #1f5c45;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #111110;
+    --foreground: #edede9;
+    --muted: #9a9a94;
+    --border: #2a2a27;
+    --surface: #1b1b19;
+    --accent: #6fb596;
+  }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-surface: var(--surface);
+  --color-accent: var(--accent);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 72px;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 18px;
+}
+
+/* Mono metadata: 13px, uppercase, wide tracking */
+.meta {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.section {
+  padding-block: 96px;
+}
+@media (min-width: 768px) {
+  .section {
+    padding-block: 160px;
+  }
+}
+
+/* Scroll-entry reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 300ms ease-out, transform 300ms ease-out;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.arrow {
+  display: inline-block;
+  transition: transform 200ms ease-out;
+}
+a:hover .arrow-right,
+a:focus-visible .arrow-right {
+  transform: translateX(4px);
+}
+a:hover .arrow-down,
+a:focus-visible .arrow-down {
+  transform: translateY(4px);
+}
+a:hover .arrow-up,
+a:focus-visible .arrow-up {
+  transform: translate(3px, -3px);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0ms !important;
+  }
 }
