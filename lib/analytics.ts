@@ -20,6 +20,25 @@ export const CONSENT_EVENT = "analytics-consent-open";
 export const PRIVATE_PATHS = /^\/(admin|login|signup|reset-password)(\/|$)/;
 
 export const analyticsEnabled = Boolean(process.env.NEXT_PUBLIC_POSTHOG_KEY);
+const debug = process.env.NEXT_PUBLIC_POSTHOG_DEBUG === "true";
+
+/** Safe diagnostics: never include the project key, URLs, or event properties. */
+export function getAnalyticsStatus(): string {
+  if (!analyticsEnabled) return "missing-project-key";
+  if (isInternal()) return "internal-browser-excluded";
+  if (getConsent() === "denied") return "consent-denied";
+  if (typeof navigator !== "undefined" && (navigator.doNotTrack === "1" || navigator.doNotTrack === "yes")) return "do-not-track";
+  if (process.env.NODE_ENV === "development" && !debug && read("analytics-dev") !== "1") return "development-disabled";
+  if (typeof window !== "undefined" && PRIVATE_PATHS.test(window.location.pathname)) return "private-route-excluded";
+  return posthog.__loaded ? "initialized" : "ready";
+}
+
+function reportStatus() {
+  if (debug || process.env.NODE_ENV === "development") {
+    const status = getAnalyticsStatus();
+    console.info(`[analytics] ${status}${status === "development-disabled" ? "; set NEXT_PUBLIC_POSTHOG_DEBUG=true and restart to test local public-page events" : ""}`);
+  }
+}
 
 function read(key: string): string | null {
   try {
@@ -72,7 +91,9 @@ export function openConsentSettings() {
 
 /** Named product events. Never pass personal data (names, emails, message text). */
 export function track(event: string, properties?: Record<string, string | number | boolean>) {
-  if (!analyticsEnabled) return;
+  if (!analyticsEnabled || isInternal() || getConsent() === "denied" || PRIVATE_PATHS.test(window.location.pathname)) return;
+  if (!posthog.__loaded) initAnalytics();
+  if (!posthog.__loaded) return;
   try {
     posthog.capture(event, properties);
   } catch {
@@ -110,26 +131,29 @@ export function initAnalytics() {
 
   // Your own visits: open any page once with ?notrack=1 to exclude this browser for good.
   if (new URLSearchParams(window.location.search).get("notrack") === "1") markInternal();
-  if (isInternal()) return;
+  if (isInternal()) { reportStatus(); return; }
 
   // Keep local development out of production data unless explicitly enabled.
   const dev = process.env.NODE_ENV === "development";
   if (dev) {
     try {
-      if (window.localStorage.getItem("analytics-dev") !== "1") return;
+      if (!debug && window.localStorage.getItem("analytics-dev") !== "1") { reportStatus(); return; }
     } catch {
       return;
     }
   }
 
   const consent = getConsent();
-  if (consent === "denied") return;
+  if (consent === "denied") { reportStatus(); return; }
   const granted = consent === "granted";
   const onPrivatePage = PRIVATE_PATHS.test(window.location.pathname);
 
   posthog.init(key, {
     api_host: "/ingest", // reverse proxy (next.config.ts)
-    ui_host: "https://us.posthog.com",
+    ui_host: process.env.NEXT_PUBLIC_POSTHOG_HOST === "https://eu.i.posthog.com" ? "https://eu.posthog.com" : "https://us.posthog.com",
+    debug,
+    capture_pageview: "history_change",
+    capture_pageleave: true,
     defaults: "2026-08-30", // pageviews on client-side navigation + pageleave (time on page, scroll depth)
     person_profiles: "identified_only", // anonymous visitors don't create person profiles
     persistence: granted ? "localStorage+cookie" : "memory", // no cookies until consent
@@ -142,6 +166,7 @@ export function initAnalytics() {
     },
     // Never send anything from admin or sign-in pages.
     before_send: (event) => {
+      if (isInternal() || getConsent() === "denied") return null;
       const url = event?.properties?.$current_url;
       if (typeof url === "string") {
         try {
@@ -153,7 +178,8 @@ export function initAnalytics() {
       return event;
     },
     loaded: (ph) => {
-      if (dev) ph.debug();
+      if (debug) ph.debug();
+      reportStatus();
     },
   });
 
