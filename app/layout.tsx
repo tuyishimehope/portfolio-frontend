@@ -6,6 +6,7 @@ import Footer from "@/components/footer";
 import PageShell from "@/components/page-shell";
 import AnalyticsConsent from "@/components/analytics-consent";
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -71,6 +72,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="min-h-full flex flex-col">
         <SpeedInsights/>
+        <Analytics/>
         <a href="#top" className="skip-link">
           Skip to content
         </a>
