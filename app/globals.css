@@ -5,41 +5,56 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
-  Palette rules:
-  - ink / body / muted carry all text.
-  - primary is the only interactive color (links, buttons, focus rings).
-  - sky / joy / energy / playful / growth are decorative fills only: the hero
-    gradient, the CTA strip, and one accent per project card. Never text.
+  "Reliable optimism" palette.
+  - Core identity: ink + warm white + cobalt. Budget: ~75% neutral, ~15% cobalt, ~10% joy colours.
+  - Joy colours (sky, sun, orange, pink, green) are accents with a pale *-50 surface each.
+    Never use them as ordinary text on white: navy text on them, or decoration only.
+  - Each colour has a meaning in the live-system canvas:
+    spec = sky · architecture = cobalt · code = orange · AI agent = pink ·
+    retry = sun · healthy / tests / deployed = green · failure = coral.
 */
 :root {
-  --ink: #0a2540;
-  --body: #425466;
-  --background: #f7f9fc;
+  --ink: #0b1536;
+  --body: #5d667a;
+  --background: #fbfaf7;
   --foreground: var(--ink);
   --card: #ffffff;
   --card-foreground: var(--ink);
   --popover: #ffffff;
   --popover-foreground: var(--ink);
-  --primary: #5046e4;
-  --primary-hover: #3f36c9;
+  --primary: #365cf5;
+  --primary-hover: #2445d6;
   --primary-foreground: #ffffff;
-  --secondary: #eef2f7;
+  --secondary: #f3f2ee;
   --secondary-foreground: var(--ink);
-  --muted: #eef2f7;
-  --muted-foreground: #64748b;
-  --accent: #eef2f7;
+  --muted: #f3f2ee;
+  --muted-foreground: #5d667a;
+  --accent: #f3f2ee;
   --accent-foreground: var(--ink);
-  --destructive: #df1b41;
-  --border: #e5eaf0;
-  --input: #e5eaf0;
+  --destructive: #e85b63;
+  --border: #e6e8ef;
+  --input: #e6e8ef;
   --ring: var(--primary);
   --radius: 0.75rem;
 
-  --sky: #80e9ff;
-  --joy: #ffd84d;
-  --energy: #ff8a3d;
-  --playful: #ff6baa;
-  --growth: #42d392;
+  --sky: #8bdff7;
+  --sun: #ffd84d;
+  --orange: #ff8b4a;
+  --pink: #f476a6;
+  --green: #38c98b;
+  --coral: #e85b63;
+  --sky-50: #eaf8fe;
+  --sun-50: #fff7d6;
+  --orange-50: #fff0e7;
+  --pink-50: #fff0f6;
+  --green-50: #eaf9f2;
+  --coral-50: #fdecec;
+
+  /* Older names, kept as aliases so nothing silently loses its colour */
+  --joy: var(--sun);
+  --energy: var(--orange);
+  --playful: var(--pink);
+  --growth: var(--green);
 }
 
 /* Dark theme = the auth / hero "space" palette, so the page continues the hero */
@@ -63,6 +78,12 @@
   --accent-foreground: #f6f9ff;
   --border: #ffffff17;
   --input: #ffffff21;
+  --sky-50: #8bdff714;
+  --sun-50: #ffd84d12;
+  --orange-50: #ff8b4a12;
+  --pink-50: #f476a614;
+  --green-50: #38c98b14;
+  --coral-50: #e85b631a;
 }
 
 @theme inline {
@@ -88,6 +109,17 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-sky: var(--sky);
+  --color-sun: var(--sun);
+  --color-orange: var(--orange);
+  --color-pink: var(--pink);
+  --color-green: var(--green);
+  --color-coral: var(--coral);
+  --color-sky-50: var(--sky-50);
+  --color-sun-50: var(--sun-50);
+  --color-orange-50: var(--orange-50);
+  --color-pink-50: var(--pink-50);
+  --color-green-50: var(--green-50);
+  --color-coral-50: var(--coral-50);
   --color-joy: var(--joy);
   --color-energy: var(--energy);
   --color-playful: var(--playful);
@@ -95,6 +127,7 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-geist-sans);
+  --font-serif: var(--font-instrument-serif);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -141,54 +174,6 @@
   }
 }
 
-/* The brand gradient: sky → indigo → pink → orange → yellow */
-.brand-gradient {
-  background: linear-gradient(
-    100deg,
-    var(--sky) 0%,
-    var(--primary) 30%,
-    var(--playful) 55%,
-    var(--energy) 78%,
-    var(--joy) 100%
-  );
-  background-size: 200% 100%;
-  animation: gradient-drift 18s ease-in-out infinite alternate;
-}
-
-@keyframes gradient-drift {
-  from {
-    background-position: 0% 50%;
-  }
-  to {
-    background-position: 100% 50%;
-  }
-}
-
-/* Pastel sweep for light panels (Stripe-style), fading out toward the content */
-.joy-wash {
-  background:
-    radial-gradient(55% 50% at 88% 22%, color-mix(in oklab, var(--energy) 80%, transparent), transparent 72%),
-    radial-gradient(50% 50% at 68% 32%, color-mix(in oklab, var(--playful) 65%, transparent), transparent 72%),
-    radial-gradient(45% 50% at 96% 58%, color-mix(in oklab, var(--primary) 55%, transparent), transparent 72%),
-    radial-gradient(45% 40% at 74% 4%, color-mix(in oklab, var(--joy) 85%, transparent), transparent 72%),
-    radial-gradient(40% 40% at 48% 14%, color-mix(in oklab, var(--sky) 60%, transparent), transparent 72%);
-  -webkit-mask-image: linear-gradient(210deg, #000 28%, transparent 66%);
-  mask-image: linear-gradient(210deg, #000 28%, transparent 66%);
-}
-.dark .joy-wash {
-  opacity: 0.4;
-}
-
-/* Gradient-filled display text: orange → pink → indigo → sky */
-.joy-text {
-  background: linear-gradient(90deg, var(--energy), var(--playful) 35%, var(--primary) 68%, var(--sky));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-mask-image: linear-gradient(to bottom, #000 45%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 45%, transparent 100%);
-}
-
 /* Decorative loops (from the Trustplot auth showcase) */
 @theme {
   --animate-float: float 7s ease-in-out infinite;
@@ -217,8 +202,7 @@
 
 /*
   Shared language from the auth pages, reused across the site:
-  eyebrow labels, the "space" navy panel, dark glass, glowing primary buttons,
-  and soft-focus fields.
+  eyebrow labels, glowing primary buttons and soft-focus fields.
 */
 .eyebrow {
   font-size: 12px;
@@ -226,42 +210,6 @@
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--primary);
-}
-
-/* Deep navy with a sky glow from above (auth-page background, tuned for panels) */
-.space-panel {
-  color-scheme: dark;
-  color: #f6f9ff;
-  background:
-    radial-gradient(ellipse at 50% -20%, #b2f4ff55 0%, #367df440 22%, #163ebf30 42%, transparent 66%),
-    radial-gradient(ellipse at 0% 100%, #123a9b60, transparent 50%),
-    radial-gradient(ellipse at 100% 80%, #125b7840, transparent 45%),
-    #061327;
-}
-.space-stars {
-  opacity: 0.45;
-  background-image:
-    radial-gradient(circle, #c9e9ff 1px, transparent 1.5px),
-    radial-gradient(circle, #c9e9ff 1px, transparent 1.5px);
-  background-size: 167px 193px, 283px 271px;
-  background-position: 37px 61px, 129px 83px;
-  -webkit-mask-image: linear-gradient(black, transparent 70%);
-  mask-image: linear-gradient(black, transparent 70%);
-}
-.space-orbit {
-  pointer-events: none;
-  position: absolute;
-  border: 1px solid #a9d8ff14;
-  border-radius: 50%;
-}
-
-/* Dark frosted card (auth-card) */
-.glass-dark {
-  border: 1px solid #ffffff24;
-  background: linear-gradient(155deg, #729fe526, #0a1a33d9 44%, #081427e6);
-  box-shadow: 0 24px 70px #00000055, inset 0 1px 0 #ffffff18;
-  -webkit-backdrop-filter: blur(24px);
-  backdrop-filter: blur(24px);
 }
 
 /* Primary action: glow + lift (auth-submit / Trustplot submit) */
@@ -339,6 +287,35 @@
   box-shadow: inset 0 1px 0 #ffffff12, 0 24px 60px -30px #000000aa;
 }
 
+/* Dawn: several soft lights that live behind the hero canvas, never behind the headline */
+.dawn-glow {
+  background:
+    radial-gradient(circle at 70% 22%, rgb(139 223 247 / 0.42), transparent 34%),
+    radial-gradient(circle at 92% 40%, rgb(244 118 166 / 0.2), transparent 30%),
+    radial-gradient(circle at 74% 70%, rgb(255 216 77 / 0.24), transparent 32%),
+    radial-gradient(circle at 88% 6%, rgb(54 92 245 / 0.12), transparent 28%);
+}
+.dark .dawn-glow {
+  opacity: 0.45;
+}
+
+/* A thin band of the same dawn along the top of the dark closing section */
+.dawn-band {
+  background:
+    radial-gradient(60% 100% at 20% 0%, rgb(139 223 247 / 0.35), transparent 70%),
+    radial-gradient(50% 100% at 55% 0%, rgb(244 118 166 / 0.22), transparent 70%),
+    radial-gradient(45% 100% at 85% 0%, rgb(255 216 77 / 0.22), transparent 70%);
+}
+
+@keyframes canvas-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
 /* Scroll-entry reveal */
 .reveal {
   opacity: 0;
@@ -375,9 +352,6 @@ a:focus-visible .arrow-up {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
-  }
-  .brand-gradient {
-    animation: none;
   }
   .reveal {
     opacity: 1;
@@ -472,23 +446,6 @@ a:focus-visible .arrow-up {
 }
 .auth-submit:hover { filter: brightness(1.1); box-shadow: 0 6px 32px #438cfa45; }
 .auth-page :focus-visible { outline-color: #80e9ff; }
-/* Big numbers: indigo → cyan, dark enough to read on white */
-.stat-gradient-text {
-  background: linear-gradient(100deg, var(--primary), #1d9bd1);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-.dark .stat-gradient-text {
-  background-image: linear-gradient(100deg, #8fa8ff, #56dff5);
-}
-/* Same periwinkle → ice → cyan as the auth submit button, as text */
-.space-gradient-text {
-  background: linear-gradient(100deg, #8fa8ff, #b7e8f5 55%, #56dff5);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
 .auth-submit:hover .arrow,
 .auth-social:hover .arrow { transform: translateX(3px); }
 @media (max-width: 639px) {

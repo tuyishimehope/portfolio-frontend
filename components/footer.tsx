@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowUpRight, FileText, Mail, Sparkle } from "lucide-react";
+import { ArrowUpRight, FileText, Mail } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 import Reveal from "@/components/reveal";
 import ThemeSwitcher from "@/components/theme-switcher";
@@ -33,14 +33,13 @@ type Channel = {
   href: string;
   icon: ComponentType<SVGProps<SVGSVGElement>>;
   external?: boolean;
-  tile: string; // pastel icon tile, decorative
 };
 
 const channels: Channel[] = [
-  { label: "Email", href: `mailto:${site.email}`, icon: Mail, tile: "bg-joy/45" },
-  { label: "LinkedIn", href: site.linkedin, icon: LinkedInIcon, external: true, tile: "bg-sky/40" },
-  { label: "GitHub", href: site.github, icon: GitHubIcon, external: true, tile: "bg-playful/25" },
-  { label: "Résumé", href: site.resume, icon: FileText, external: true, tile: "bg-energy/25" },
+  { label: "Email", href: `mailto:${site.email}`, icon: Mail },
+  { label: "LinkedIn", href: site.linkedin, icon: LinkedInIcon, external: true },
+  { label: "GitHub", href: site.github, icon: GitHubIcon, external: true },
+  { label: "Résumé", href: site.resume, icon: FileText, external: true },
 ];
 
 const columns = [
@@ -67,116 +66,93 @@ export default function Footer() {
   const showPitch = usePathname() !== "/contact";
 
   return (
-    <footer className="px-2 pb-2 md:px-4 md:pb-4">
-      <div className="relative isolate overflow-hidden rounded-[28px] bg-card text-ink ring-1 ring-border">
-        {/* Joy wash: pastel sweep in the top-right corner, decorative only */}
-        <div aria-hidden className="joy-wash pointer-events-none absolute -top-24 right-0 -z-10 h-[620px] w-full md:w-[70%]" />
-        {/* Soft glow that the wordmark sits in */}
-        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-[420px]">
-          <div className="absolute bottom-[-180px] left-[5%] size-[460px] rounded-full bg-joy/30 blur-[120px]" />
-          <div className="absolute bottom-[-200px] left-[38%] size-[460px] rounded-full bg-playful/20 blur-[120px]" />
-          <div className="absolute bottom-[-180px] right-[5%] size-[420px] rounded-full bg-sky/30 blur-[120px]" />
-        </div>
+    // Follows the site theme: white in light mode, deep navy in dark mode.
+    <footer className="relative isolate overflow-hidden border-t bg-card text-foreground dark:bg-[#0b1536]">
+      <div aria-hidden className="dawn-band pointer-events-none absolute inset-x-0 top-0 -z-10 h-56" />
+      <div aria-hidden className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-ink/15 to-transparent dark:via-white/25" />
 
-        <div className={cn(container, "pt-20 md:pt-28")}>
-          {showPitch && (
-            <Reveal className="mb-16 md:mb-24">
-              <p className="flex items-center gap-2 text-[14px] font-medium text-primary">
-                <Sparkle className="size-3.5 fill-current" aria-hidden />
-                Contact
-              </p>
-              <h2 className="mt-5 max-w-[20ch] text-[clamp(34px,4.6vw,60px)] font-semibold leading-[1.06] tracking-[-0.03em]">
-                Building something that has to work?{" "}
-                <span className="text-muted-foreground">Let&apos;s talk about backend systems, data, or AI.</span>
-              </h2>
-              <p className="mt-10 text-[14px] text-muted-foreground">Write to me at</p>
+      <div className={cn(container, "pt-24 md:pt-32")}>
+        {showPitch && (
+          <Reveal className="mb-20 md:mb-28">
+            <p className="font-mono text-[12px] tracking-[0.12em] text-muted-foreground uppercase">Contact</p>
+            <h2 className="mt-6 max-w-[14ch] text-[clamp(44px,7vw,104px)] leading-[0.96] font-semibold tracking-[-0.04em] text-ink">
+              Building something that has to work?
+            </h2>
+            <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
               <a
                 href={`mailto:${site.email}`}
-                className="mt-2 inline-flex items-center gap-2 text-[clamp(20px,2.4vw,28px)] font-medium tracking-tight hover:text-primary"
+                className="group inline-flex h-12 items-center gap-2 rounded-full bg-ink px-6 text-[16px] font-semibold text-background transition-transform hover:-translate-y-0.5 motion-reduce:transform-none dark:bg-white dark:text-[#0b1536]"
               >
-                {site.email}
-                <ArrowUpRight className="arrow arrow-up size-6 text-primary" aria-hidden />
+                Let&apos;s talk <span className="arrow arrow-right" aria-hidden>→</span>
               </a>
-            </Reveal>
-          )}
-
-          {/* Channel cards */}
-          <ul className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
-            {channels.map(({ label, href, icon: Icon, external, tile }) => (
-              <li key={label}>
-                <a
-                  href={href}
-                  {...(external ? newTab : {})}
-                  className="group flex items-center justify-between gap-3 rounded-2xl border bg-card/80 p-3 shadow-[0_1px_2px_rgb(10_37_64/0.04)] backdrop-blur transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_28px_-12px_rgb(10_37_64/0.2)] md:p-4"
-                >
-                  <span className="flex items-center gap-3 text-[16px] font-medium">
-                    <span className={cn("flex size-10 items-center justify-center rounded-xl text-ink", tile)}>
-                      <Icon className="size-[18px]" />
-                    </span>
-                    {label}
-                  </span>
-                  <ArrowUpRight
-                    className="arrow arrow-up size-5 text-muted-foreground group-hover:text-primary"
-                    aria-hidden
-                  />
-                </a>
-              </li>
-            ))}
-          </ul>
-
-          {/* Link columns */}
-          <div className="grid grid-cols-2 gap-10 py-14 md:grid-cols-12 md:py-20">
-            <div className="col-span-2 md:col-span-5">
-              <p className="max-w-[34ch] text-[16px] leading-relaxed text-body">
-                Backend engineer building dependable systems for real institutions. {site.location}, open to
-                relocation.
-              </p>
+              <a href={`mailto:${site.email}`} className="font-mono text-[15px] text-body hover:text-ink">
+                {site.email}
+              </a>
             </div>
-            {columns.map((col) => (
-              <nav key={col.title} aria-label={col.title} className="md:col-span-3">
-                <p className="meta">{col.title}</p>
-                <ul className="mt-5 space-y-3 text-[16px]">
-                  {col.links.map((l) => (
-                    <li key={l.href}>
-                      <Link href={l.href} className="text-body transition-colors hover:text-primary">
-                        {l.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            ))}
-          </div>
-        </div>
+          </Reveal>
+        )}
 
-        {/* Giant gradient wordmark, cropped by the bottom bar */}
-        <div className={cn(container, "pointer-events-none select-none")} aria-hidden>
-          <p className="joy-text -mb-[0.2em] text-[clamp(120px,30vw,400px)] font-semibold leading-[0.85] tracking-[-0.065em]">
-            Hope.
+        {/* Channels */}
+        <ul className="grid grid-cols-2 border-t border-l md:grid-cols-4">
+          {channels.map(({ label, href, icon: Icon, external }) => (
+            <li key={label} className="border-r border-b">
+              <a
+                href={href}
+                {...(external ? newTab : {})}
+                className="group flex items-center justify-between gap-3 px-4 py-5 transition-colors hover:bg-muted md:px-6 dark:hover:bg-white/[0.05]"
+              >
+                <span className="flex items-center gap-3 text-[16px] text-ink">
+                  <Icon className="size-[18px] text-body" />
+                  {label}
+                </span>
+                <ArrowUpRight className="arrow arrow-up size-5 text-muted-foreground group-hover:text-primary" aria-hidden />
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        {/* Columns */}
+        <div className="grid grid-cols-2 gap-10 py-14 md:grid-cols-12 md:py-20">
+          <p className="col-span-2 max-w-[34ch] text-[16px] leading-relaxed text-body md:col-span-6">
+            Backend engineer building dependable systems for real institutions. {site.location} · open to relocation.
           </p>
+          {columns.map((col) => (
+            <nav key={col.title} aria-label={col.title} className="md:col-span-3">
+              <p className="font-mono text-[12px] tracking-[0.12em] text-muted-foreground uppercase">{col.title}</p>
+              <ul className="mt-5 space-y-3 text-[16px]">
+                {col.links.map((l) => (
+                  <li key={l.href}>
+                    <Link href={l.href} className="text-body transition-colors hover:text-ink">
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ))}
         </div>
+      </div>
 
-        {/* Bottom bar */}
-        <div className="relative border-t bg-card/70 backdrop-blur">
-          <div
-            className={cn(
-              container,
-              "flex flex-col items-start gap-4 py-6 text-[13px] text-muted-foreground md:flex-row md:items-center md:justify-between",
+      {/* Bottom bar */}
+      <div className="border-t">
+        <div
+          className={cn(
+            container,
+            "flex flex-col items-start gap-4 py-6 text-[13px] text-muted-foreground md:flex-row md:items-center md:justify-between",
+          )}
+        >
+          <span className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <span>© 2026 {site.name}</span>
+            {analyticsEnabled && (
+              <button type="button" onClick={openConsentSettings} className="underline-offset-4 hover:text-ink hover:underline">
+                Cookie settings
+              </button>
             )}
-          >
-            <span className="flex flex-wrap items-center gap-x-4 gap-y-1">
-              <span>© 2026 {site.name}</span>
-              {analyticsEnabled && (
-                <button type="button" onClick={openConsentSettings} className="underline-offset-4 hover:text-primary hover:underline">
-                  Cookie settings
-                </button>
-              )}
-            </span>
-            <ThemeSwitcher />
-            <a href="#top" className="hover:text-primary">
-              Back to top <span className="arrow arrow-up" aria-hidden>↑</span>
-            </a>
-          </div>
+          </span>
+          <ThemeSwitcher />
+          <a href="#top" className="hover:text-ink">
+            Back to top <span className="arrow arrow-up" aria-hidden>↑</span>
+          </a>
         </div>
       </div>
     </footer>

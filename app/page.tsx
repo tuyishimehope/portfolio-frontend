@@ -4,27 +4,35 @@ import {
   AboutBento,
   CapabilitiesGrid,
   ExperienceList,
+  ImpactSection,
   MoreLink,
   PostList,
   ProjectCard,
+  ProofLine,
   SectionLabel,
   container,
 } from "@/components/site";
-import { flagship, posts, secondary } from "@/lib/content";
+import { posts, projects } from "@/lib/content";
 
+/*
+  Rhythm: warm-white hero with the live system → quiet proof line → pastel project
+  cards on the neutral canvas → colourless IFAD numbers → About (portrait lives here)
+  → capabilities → experience → the one dark section (CTA + footer, in the layout).
+*/
 export default function Home() {
   return (
     <main id="top">
       <Hero />
+      <ProofLine />
 
       {/* Selected work */}
       <section id="work" className={`${container} section`}>
         <SectionLabel n="01">Selected work</SectionLabel>
-        <Reveal>
-          <ProjectCard project={flagship} flagship />
-        </Reveal>
-        <div className="mt-20 grid gap-20 md:grid-cols-2 md:gap-8">
-          {secondary.map((p) => (
+        <h2 className="-mt-4 mb-12 max-w-[18ch] text-[clamp(36px,4.6vw,60px)] leading-[1.02] font-semibold tracking-[-0.03em] md:-mt-6 md:mb-16">
+          Work that had to keep working.
+        </h2>
+        <div className="space-y-16 md:space-y-24">
+          {projects.map((p) => (
             <Reveal key={p.slug}>
               <ProjectCard project={p} />
             </Reveal>
@@ -33,10 +41,12 @@ export default function Home() {
         <MoreLink href="/projects">All work</MoreLink>
       </section>
 
-      {/* About: bento */}
-      <section className="section border-t">
+      <ImpactSection />
+
+      {/* About */}
+      <section className="section">
         <div className={container}>
-          <SectionLabel n="02">About</SectionLabel>
+          <SectionLabel n="03">About</SectionLabel>
           <AboutBento />
         </div>
       </section>
@@ -44,7 +54,7 @@ export default function Home() {
       {/* Capabilities */}
       <section className="section border-t">
         <div className={container}>
-          <SectionLabel n="03">Capabilities</SectionLabel>
+          <SectionLabel n="04">Capabilities</SectionLabel>
           <CapabilitiesGrid />
         </div>
       </section>
@@ -52,7 +62,7 @@ export default function Home() {
       {/* Experience */}
       <section className="section border-t">
         <div className={container}>
-          <SectionLabel n="04">Experience</SectionLabel>
+          <SectionLabel n="05">Experience</SectionLabel>
           <ExperienceList />
         </div>
       </section>
@@ -61,7 +71,7 @@ export default function Home() {
       {posts.length > 0 && (
         <section className="section border-t">
           <div className={container}>
-            <SectionLabel n="05">Writing</SectionLabel>
+            <SectionLabel n="06">Writing</SectionLabel>
             <PostList limit={3} />
             <MoreLink href="/blogs">All writing</MoreLink>
           </div>

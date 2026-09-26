@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Reveal from "@/components/reveal";
 import { PageHeader, ProjectCard, container } from "@/components/site";
-import { flagship, secondary } from "@/lib/content";
+import { projects } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Work — Hope Tuyishime",
-  description: "Case studies: Trustplot (land intelligence for Rwanda), document intelligence at IFAD, and DocFlow, an asynchronous AI document-processing backend.",
+  description: "Case studies: Trustplot, land and property intelligence for Rwanda, and DocFlow, an asynchronous AI document-processing backend.",
   alternates: { canonical: "/projects" },
-  openGraph: { title: "Work — Hope Tuyishime", description: "Case studies: Trustplot (land intelligence for Rwanda), document intelligence at IFAD, and DocFlow, an asynchronous AI document-processing backend.", url: "/projects" },
+  openGraph: { title: "Work — Hope Tuyishime", description: "Case studies: Trustplot, land and property intelligence for Rwanda, and DocFlow, an asynchronous AI document-processing backend.", url: "/projects" },
 };
 
 export default function WorkPage() {
@@ -16,14 +16,11 @@ export default function WorkPage() {
       <PageHeader
         label="Work"
         title="Systems built for people who depend on them."
-        intro="A founder-built property platform, a document-processing backend, and an LLM tool shipped inside an organization's constraints."
+        intro="A property-intelligence platform I founded, and an asynchronous document-processing backend built in the open."
       />
       <section className={`${container} pb-24 md:pb-40`}>
-        <Reveal>
-          <ProjectCard project={flagship} flagship />
-        </Reveal>
-        <div className="mt-20 grid gap-20 md:grid-cols-2 md:gap-8">
-          {secondary.map((p) => (
+        <div className="space-y-16 md:space-y-24">
+          {projects.map((p) => (
             <Reveal key={p.slug}>
               <ProjectCard project={p} />
             </Reveal>

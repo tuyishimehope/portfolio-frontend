@@ -54,6 +54,17 @@ export default async function CaseStudyPage(props: PageProps<"/projects/[slug]">
           <div className="md:col-span-4 md:col-start-9">
             <p className="meta mb-3">Stack</p>
             <StackBadges project={project} />
+            {project.live && (
+              <a
+                href={project.live}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group mt-5 mr-2 inline-flex min-h-11 items-center gap-2 rounded-full bg-primary px-4 text-[15px] font-medium text-primary-foreground transition-colors hover:bg-primary-hover"
+              >
+                View live site
+                <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden />
+              </a>
+            )}
             {project.repo && (
               <a
                 href={project.repo}

@@ -1,6 +1,8 @@
 // Single source for site copy. Every claim here comes from the résumé (public/resume.pdf);
 // keep it that way so each line is defensible in an interview.
 
+import { allPosts, formatDate, readTime } from "@/lib/posts";
+
 export const site = {
   name: "Hope Tuyishime Wilberforce",
   email: "tuyishimehope01@gmail.com",
@@ -21,7 +23,7 @@ export type Pipeline = {
 
 export type ProjectMedia =
   | { type: "image"; src: string; alt: string; width: number; height: number }
-  | { type: "video"; src: string; label: string }
+  | { type: "video"; src: string; label: string; poster?: string }
   | { type: "diagram"; label: string; pipeline: Pipeline };
 
 export type Project = {
@@ -33,8 +35,9 @@ export type Project = {
   year?: string; // omit when unknown; the UI skips it
   visual: string; // describes the placeholder until a real image exists
   media?: ProjectMedia; // real screenshot or screen recording; falls back to the placeholder
-  accent: "growth" | "energy" | "playful"; // one decorative color per project
+  accent: "sky" | "sun" | "pink"; // one pale surface per project
   repo?: string; // public source code
+  live?: string; // live product URL
   architecture?: Pipeline; // shown on the case study when the main media isn't already a diagram
   // Case-study body. Keep every claim defensible in an interview.
   caseStudy: { heading: string; body: string; points?: string[] }[];
@@ -49,13 +52,14 @@ export const flagship: Project = {
   year: "2026",
   visual: "Map / search results screenshot",
   media: {
-    type: "image",
-    src: "/projects/trustplot.webp",
-    alt: "Trustplot property workspace: satellite map with a parcel boundary and site intelligence for parcel 11337 in Kanombe, Kicukiro",
-    width: 2000,
-    height: 1200,
+    type: "video",
+    src: "/projects/trustplot-demo.mp4",
+    label: "Trustplot demo: searching a parcel by UPI and reviewing its boundary, zoning, risk and reference value",
+    poster: "/projects/trustplot.webp",
   },
-  accent: "growth",
+  live: "https://trustplot-frontend.vercel.app/",
+
+  accent: "sky",
   caseStudy: [
     {
       heading: "Context",
@@ -86,7 +90,7 @@ export const secondary: Project[] = [
     year: "2026",
     visual: "Upload → queue → workers → storage",
     media: { type: "video", src: "/projects/docflow.mp4", label: "DocFlow screen recording" },
-    accent: "energy",
+    accent: "sun",
     repo: "https://github.com/tuyishimehope/DOC-FLOW",
     architecture: {
       request: ["Upload", "Validate type", "Store file in MinIO", "Create request"],
@@ -132,45 +136,6 @@ export const secondary: Project[] = [
       },
     ],
   },
-  {
-    slug: "document-intelligence",
-    title: "Document intelligence at IFAD",
-    problem: "A UN agency needed incoming documents ingested, read, reviewed and archived without slowing its systems down.",
-    role: "Full-stack engineer (internship)",
-    stack: ["FastAPI", "PostgreSQL", "Azure Service Bus"],
-    year: "2025–26",
-    visual: "Ingest → OCR → extraction → human review → archive",
-    media: {
-      type: "diagram",
-      label: "IFAD document pipeline: FastAPI accepts the document, Azure Service Bus queues the work, background workers run OCR, extraction, human review and archival",
-      pipeline: {
-        request: ["Ingest document", "Validate", "Create record"],
-        response: "Accepted in <200 ms",
-        queue: "Azure Service Bus",
-        stages: ["OCR", "Information extraction", "Human review", "Archive"],
-        stores: ["PostgreSQL"],
-      },
-    },
-    accent: "playful",
-    caseStudy: [
-      {
-        heading: "Context",
-        body: "At IFAD, the International Fund for Agricultural Development (a UN specialised agency in Rome), documents had to go through ingestion, OCR, information extraction, human review and archival: around 100 documents a day.",
-      },
-      {
-        heading: "What I built",
-        body: "Python FastAPI and PostgreSQL services for the full workflow, with asynchronous pipelines on Azure Service Bus and distributed background workers. I designed the PostgreSQL schemas and optimised the queries for AI-extracted document data, and built the React, Next.js and TypeScript review interfaces.",
-      },
-      {
-        heading: "Hard parts",
-        body: "Failure handling in a distributed, long-running workflow. I implemented retry, recovery and failure-handling mechanisms across the asynchronous services.",
-      },
-      {
-        heading: "Outcome",
-        body: "API responses stayed under 200 ms while document analysis ran outside the request cycle, and failed jobs dropped by 60%.",
-      },
-    ],
-  },
 ];
 
 export const capabilities = [
@@ -206,7 +171,6 @@ export const experience: Experience[] = [
     org: "IFAD, Rome",
     impact:
       "Built FastAPI and PostgreSQL services for document ingestion, OCR, extraction and review (~100 documents a day), with Azure Service Bus workers that kept APIs under 200 ms and cut failed jobs by 60%.",
-    href: "/projects/document-intelligence",
   },
   {
     start: "Aug 2024",
@@ -253,5 +217,15 @@ export const facts = {
 
 export const projects = [flagship, ...secondary];
 
-// Leave empty until real posts exist; the Writing section hides itself.
-export const posts: { date: string; title: string; readTime: string; href: string }[] = [];
+// Blog listing, derived from lib/posts.ts (newest first). Empty → blog stays hidden.
+export const posts = [...allPosts]
+  .sort((a, b) => b.date.localeCompare(a.date))
+  .map((p) => ({
+    slug: p.slug,
+    title: p.title,
+    description: p.description,
+    tags: p.tags,
+    date: formatDate(p.date),
+    readTime: readTime(p),
+    href: `/blogs/${p.slug}`,
+  }));

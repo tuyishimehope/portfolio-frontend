@@ -8,11 +8,13 @@ export default function AutoVideo({
   src,
   label,
   controls = false,
+  poster,
   className,
 }: {
   src: string;
   label: string;
   controls?: boolean;
+  poster?: string; // shown until the first frame is ready
   className?: string;
 }) {
   const ref = useRef<HTMLVideoElement>(null);
@@ -42,6 +44,7 @@ export default function AutoVideo({
       loop
       playsInline
       preload="metadata"
+      poster={poster}
       controls={controls}
       className={className}
     />

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ArrowUpRight, Container, Database, GraduationCap, MapPin, Server, Sparkles, type LucideIcon } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, Container, Database, GraduationCap, MapPin, Server, Sparkles, type LucideIcon } from "lucide-react";
 import type { CSSProperties } from "react";
 import AutoVideo from "@/components/auto-video";
 import PipelineDiagram from "@/components/pipeline-diagram";
@@ -17,14 +17,12 @@ export const pill = "h-11 rounded-full px-6 text-[16px]";
 export const pillPrimary = cn(pill, "btn-glow hover:bg-primary-hover");
 export const pillOutline = cn(pill, "border-ink bg-transparent text-ink hover:bg-ink hover:text-background");
 
-// Static class names so Tailwind can see them. Accents are decoration only.
+// Each project owns one pale surface (the card itself) and a saturated dot.
+// Static class names so Tailwind can see them.
 const accentStyles: Record<Project["accent"], { tint: string; dot: string }> = {
-  growth: { tint: "bg-growth/8 dark:bg-transparent dark:bg-[radial-gradient(ellipse_at_50%_0%,rgb(66_211_146/0.16),transparent_70%)]", dot: "bg-growth" },
-  energy: { tint: "bg-energy/8 dark:bg-transparent dark:bg-[radial-gradient(ellipse_at_50%_0%,rgb(255_138_61/0.16),transparent_70%)]", dot: "bg-energy" },
-  playful: {
-    tint: "bg-gradient-to-br from-playful/10 to-primary/8 dark:from-playful/12 dark:to-primary/10",
-    dot: "bg-gradient-to-br from-playful to-primary",
-  },
+  sky: { tint: "bg-sky-50", dot: "bg-sky" },
+  sun: { tint: "bg-sun-50", dot: "bg-sun" },
+  pink: { tint: "bg-pink-50", dot: "bg-pink" },
 };
 
 export function SectionLabel({ n, children }: { n: string; children: string }) {
@@ -125,7 +123,7 @@ export function ProjectVisual({
               priority
             />
           ) : (
-            <AutoVideo src={media.src} label={media.label} controls className="aspect-video w-full" />
+            <AutoVideo src={media.src} label={media.label} poster={media.poster} controls className="aspect-video w-full" />
           )}
         </div>
       </div>
@@ -203,33 +201,95 @@ export function ProjectMeta({ project }: { project: Project }) {
   );
 }
 
-export function ProjectCard({ project, flagship }: { project: Project; flagship?: boolean }) {
+// Media-first card: the screenshot or video fills the whole card, edge to edge.
+// Hover (or keyboard focus) reveals the problem, stack and a link; touch screens
+// get the same details below the title. Everything else lives on the project page.
+export function ProjectCard({ project }: { project: Project }) {
+  const { media } = project;
+  const href = `/projects/${project.slug}`;
   return (
-    <Link href={`/projects/${project.slug}`} className="group block h-full rounded-xl">
-      <Card className="h-full gap-0 py-0 ring-border transition-shadow duration-300 group-hover:shadow-[0_12px_32px_-12px_rgb(10_37_64/0.18)]">
-        <ProjectVisual project={project} tall={flagship} />
-        <div className={cn("p-6 md:p-8", flagship && "md:grid md:grid-cols-12 md:gap-8")}>
-          <div className={flagship ? "md:col-span-7" : ""}>
-            <AccentLabel project={project}>{flagship ? "Flagship" : "Case study"}</AccentLabel>
-            <h3
-              className={cn(
-                "mt-4 font-semibold tracking-tight text-ink",
-                flagship ? "text-3xl md:text-4xl" : "text-2xl",
-              )}
-            >
-              {project.title}
-            </h3>
-            <p className="mt-3 max-w-xl text-[17px] leading-relaxed text-body">{project.problem}</p>
-          </div>
-          <div className={cn("mt-6", flagship && "md:col-span-5 md:mt-9")}>
-            <ProjectMeta project={project} />
-            <p className="mt-6 text-[16px] text-primary">
+    <article className="group/card">
+      <Link
+        href={href}
+        className="group relative block aspect-[4/3] overflow-hidden rounded-3xl bg-card ring-1 ring-ink/[0.08] transition-shadow duration-300 hover:shadow-[0_28px_60px_-32px_rgb(11_21_54/0.45)] sm:aspect-[16/10] lg:aspect-[16/9]"
+        aria-label={`${project.title} case study`}
+      >
+        <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-[1.02] motion-reduce:transform-none">
+          {media?.type === "image" && (
+            <Image src={media.src} alt={media.alt} fill sizes="(min-width: 1200px) 1136px, 100vw" className="object-cover object-top" />
+          )}
+          {media?.type === "video" && (
+            <AutoVideo
+              src={media.src}
+              label={media.label}
+              poster={media.poster}
+              className="h-full w-full object-cover object-top"
+            />
+          )}
+          {media?.type === "diagram" && (
+            <div className="p-4 md:p-8">
+              <PipelineDiagram pipeline={media.pipeline} label={media.label} compact />
+            </div>
+          )}
+          {!media && (
+            <div className="flex h-full items-center justify-center">
+              <span className="meta px-6 text-center">{project.visual}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Hover details (hover-capable devices only) */}
+        <div className="pointer-events-none absolute inset-x-3 bottom-3 hidden translate-y-4 rounded-2xl border bg-card/90 p-5 opacity-0 shadow-[0_20px_40px_-24px_rgb(11_21_54/0.45)] backdrop-blur-xl transition-[opacity,transform] duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100 motion-reduce:transform-none sm:inset-x-6 sm:bottom-6 sm:p-6 [@media(hover:hover)]:block">
+          <p className="max-w-2xl text-[17px] leading-snug text-ink">{project.problem}</p>
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+            <ul className="flex flex-wrap gap-2">
+              {project.stack.map((item) => (
+                <li key={item} className="rounded-full border bg-background/70 px-3 py-1 font-mono text-[12px] text-ink">
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <span className="text-[15px] font-medium text-primary">
               Read case study <span className="arrow arrow-right" aria-hidden>→</span>
-            </p>
+            </span>
           </div>
         </div>
-      </Card>
-    </Link>
+      </Link>
+
+      {/* Always visible */}
+      <div className="mt-5 flex items-start justify-between gap-4 px-1">
+        <div className="min-w-0">
+          <AccentLabel project={project}>{[project.role, project.year].filter(Boolean).join(" · ")}</AccentLabel>
+          <h3 className="mt-2 text-2xl font-semibold tracking-tight text-ink md:text-3xl">
+            <Link href={href} className="hover:text-primary">
+              {project.title}
+            </Link>
+          </h3>
+          {/* Touch screens can't hover: show the essentials here instead */}
+          <p className="mt-2 max-w-xl text-[16px] leading-relaxed text-body [@media(hover:hover)]:hidden">{project.problem}</p>
+        </div>
+        <div className="mt-5 flex shrink-0 items-center gap-2">
+          {project.live && (
+            <a
+              href={project.live}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-11 items-center gap-1.5 rounded-full border px-4 text-[14px] font-medium text-ink transition-colors hover:border-primary hover:text-primary"
+            >
+              View live
+              <ArrowUpRight className="size-4" aria-hidden />
+            </a>
+          )}
+          <Link
+            href={href}
+            aria-label={`Read the ${project.title} case study`}
+            className="flex size-11 items-center justify-center rounded-full border text-ink transition-colors hover:border-primary hover:bg-primary hover:text-primary-foreground group-hover/card:border-primary"
+          >
+            <ArrowRight className="size-4" aria-hidden />
+          </Link>
+        </div>
+      </div>
+    </article>
   );
 }
 
@@ -413,10 +473,29 @@ export function PostList({ limit }: { limit?: number }) {
     <ul className="border-t">
       {posts.slice(0, limit).map((p) => (
         <li key={p.href} className="border-b">
-          <Link href={p.href} className="group grid gap-2 py-6 md:grid-cols-12 md:gap-8">
-            <span className="meta md:col-span-2 md:pt-1">{p.date}</span>
-            <span className="text-xl font-semibold group-hover:text-primary md:col-span-8">{p.title}</span>
-            <span className="meta md:col-span-2 md:pt-1 md:text-right">{p.readTime}</span>
+          <Link href={p.href} className="group grid gap-3 py-8 md:grid-cols-12 md:gap-8 md:py-10">
+            <p className="font-mono text-[13px] text-muted-foreground md:col-span-3 md:pt-1.5">
+              {p.date} · {p.readTime}
+            </p>
+            <div className="md:col-span-8">
+              <h3 className="text-[clamp(22px,2.4vw,30px)] leading-tight font-semibold tracking-[-0.02em] text-ink transition-colors group-hover:text-primary">
+                {p.title}
+              </h3>
+              <p className="mt-3 max-w-2xl text-[17px] leading-relaxed text-body">{p.description}</p>
+              <ul className="mt-4 flex flex-wrap gap-2">
+                {p.tags.map((t) => (
+                  <li key={t} className="rounded-full border bg-card px-3 py-1 font-mono text-[12px] text-ink">
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <span
+              aria-hidden
+              className="hidden size-11 items-center justify-center justify-self-end rounded-full border text-ink transition-colors group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground md:col-span-1 md:flex"
+            >
+              <ArrowRight className="size-4" />
+            </span>
           </Link>
         </li>
       ))}
@@ -424,108 +503,132 @@ export function PostList({ limit }: { limit?: number }) {
   );
 }
 
-// Homepage "About" bento: one dark story tile, then small fact tiles and an impact strip.
+// Homepage About preview: warm story tile + the portrait (moved here from the hero),
+// then three quiet fact tiles.
 const tile =
-  "h-full gap-0 rounded-2xl p-6 ring-border transition-[box-shadow,transform] duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_36px_-18px_rgb(10_37_64/0.3)] motion-reduce:transform-none";
+  "h-full gap-0 rounded-3xl p-6 ring-ink/[0.06] transition-[box-shadow,transform] duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_36px_-20px_rgb(11_21_54/0.28)] motion-reduce:transform-none";
 
 export function AboutBento() {
   return (
-    <div className="grid gap-4 md:grid-cols-4">
-      {/* Story (2×2), in the hero's space palette */}
-      <Reveal className="md:col-span-2 md:row-span-2">
-        <div className="auth-page relative isolate flex h-full flex-col overflow-hidden rounded-2xl p-7 ring-1 ring-white/10 md:p-9">
-          <div aria-hidden className="auth-stars pointer-events-none absolute inset-0 -z-10" />
-          <p className="text-[11px] font-medium tracking-[0.22em] text-[#a9d8ff] uppercase">Hello, I&apos;m Hope</p>
-          <p className="mt-5 text-[clamp(22px,2.3vw,30px)] leading-snug tracking-tight">
+    <div className="grid gap-4 md:grid-cols-12">
+      {/* Story */}
+      <Reveal className="md:col-span-7 md:row-span-2">
+        <div className="flex h-full flex-col rounded-3xl bg-sky-50 p-7 ring-1 ring-ink/[0.06] md:p-10">
+          <p className="font-mono text-[12px] tracking-[0.12em] text-muted-foreground uppercase">Hello, I&apos;m Hope</p>
+          <p className="mt-5 text-[clamp(24px,2.5vw,34px)] leading-[1.2] font-medium tracking-[-0.02em] text-ink">
             I like problems where software has to keep working after the demo:{" "}
-            <span className="space-gradient-text">messy data, long-running jobs, integrations, and people who depend on it.</span>
+            <span className="text-body">messy data, long-running jobs, integrations, and people who depend on it.</span>
           </p>
-          <p className="mt-6 text-[16px] leading-relaxed text-[#b8c4d9]">
-            Most recently at IFAD, a UN agency in Rome, I built asynchronous document-processing services with
-            FastAPI, PostgreSQL and Azure Service Bus. Now I&apos;m building Trustplot. Next, I want a backend team
-            where reliability and data are the job.
+          <p className="mt-6 max-w-xl text-[17px] leading-[1.6] text-body">
+            Most recently at IFAD, a UN agency in Rome, I built asynchronous document-processing services with FastAPI,
+            PostgreSQL and Azure Service Bus. Now I&apos;m building Trustplot. Next, I want a backend team where
+            reliability and data are the job.
           </p>
           <div className="mt-auto pt-8">
-            <Link href="/about" className="auth-social w-fit px-5 text-[15px]">
-              More about me <span className="arrow arrow-right" aria-hidden>→</span>
-            </Link>
+            <MoreLink href="/about">More about me</MoreLink>
           </div>
         </div>
       </Reveal>
 
-      {/* Now: Trustplot (2 wide) */}
-      <Reveal className="md:col-span-2" delay={90}>
-        <Link href="/projects/trustplot" className="group block h-full rounded-2xl">
-          <Card className={cn(tile, "relative overflow-hidden")}>
-            <div className="relative z-10 sm:max-w-[54%]">
-              <p className="flex items-center gap-2 text-[12px] font-semibold tracking-[0.2em] text-primary uppercase">
-                <span className="relative flex size-2">
-                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-growth opacity-75 motion-reduce:hidden" />
-                  <span className="relative inline-flex size-2 rounded-full bg-growth" />
-                </span>
-                Now
-              </p>
-              <h3 className="mt-4 text-2xl font-semibold tracking-tight">Founder, Trustplot</h3>
-              <p className="mt-1.5 text-[15px] text-body">Land and property intelligence for Rwanda · since May 2026</p>
-              <p className="mt-5 text-[15px] text-primary">
-                Read case study <span className="arrow arrow-right" aria-hidden>→</span>
-              </p>
-            </div>
-            <div className="absolute top-6 -right-10 bottom-0 hidden w-[44%] overflow-hidden sm:block rounded-tl-xl bg-growth/10 shadow-[0_12px_32px_-12px_rgb(10_37_64/0.35)] ring-1 ring-ink/10 transition-transform duration-300 group-hover:-translate-y-1">
-              <Image src="/projects/trustplot.webp" alt="" fill sizes="300px" className="object-cover object-left-top" />
-            </div>
+      {/* Portrait */}
+      <Reveal className="md:col-span-5 md:row-span-2" delay={90}>
+        <div className="relative h-full min-h-[380px] overflow-hidden rounded-3xl bg-muted ring-1 ring-ink/[0.06]">
+          <Image
+            src="/hope-photo.jpg"
+            alt="Portrait of Hope Tuyishime"
+            fill
+            sizes="(min-width: 768px) 460px, 100vw"
+            className="object-cover object-[50%_20%]"
+          />
+        </div>
+      </Reveal>
+
+      {/* Now */}
+      <Reveal className="md:col-span-4" delay={180}>
+        <Link href="/projects/trustplot" className="group block h-full rounded-3xl">
+          <Card className={tile}>
+            <p className="flex items-center gap-2 font-mono text-[12px] tracking-[0.12em] text-muted-foreground uppercase">
+              <span className="relative flex size-2">
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-green opacity-70 motion-reduce:hidden" />
+                <span className="relative inline-flex size-2 rounded-full bg-green" />
+              </span>
+              Now
+            </p>
+            <h3 className="mt-4 text-lg font-semibold tracking-tight">Founder, Trustplot</h3>
+            <p className="mt-1 text-[15px] text-body">Land and property intelligence for Rwanda · since May 2026</p>
+            <p className="mt-4 text-[15px] text-primary">
+              Case study <span className="arrow arrow-right" aria-hidden>→</span>
+            </p>
           </Card>
         </Link>
       </Reveal>
 
       {/* Location */}
-      <Reveal delay={180}>
+      <Reveal className="md:col-span-4" delay={270}>
         <Card className={tile}>
           <BentoIcon icon={MapPin} />
           <h3 className="mt-5 text-lg font-semibold tracking-tight">{site.location}</h3>
-          <p className="mt-1 text-[15px] font-medium text-primary">{facts.sponsorship}</p>
-          <p className="mt-3 text-[13px] leading-relaxed text-muted-foreground">{facts.relocation}</p>
+          <p className="mt-1 text-[15px] text-ink">{facts.sponsorship}</p>
+          <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">{facts.relocation}</p>
         </Card>
       </Reveal>
 
       {/* Education */}
-      <Reveal delay={270}>
+      <Reveal className="md:col-span-4" delay={360}>
         <Card className={tile}>
           <BentoIcon icon={GraduationCap} />
           <h3 className="mt-5 text-lg leading-snug font-semibold tracking-tight">{facts.education.degree}</h3>
-          <p className="mt-2 flex flex-wrap items-center gap-2 text-[13px] text-muted-foreground">
-            <span className="rounded-full border border-primary/25 bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
-              {facts.education.honours}
-            </span>
-            {facts.education.school} · {facts.education.year}
+          <p className="mt-2 text-[14px] text-body">
+            {facts.education.honours} · {facts.education.school} · {facts.education.year}
           </p>
         </Card>
       </Reveal>
-
-      {/* Impact strip (full width) */}
-      <Reveal className="md:col-span-4" delay={360}>
-        <Card className={cn(tile, "md:p-8")}>
-          <div className="flex flex-wrap items-baseline justify-between gap-3">
-            <p className="text-[12px] font-semibold tracking-[0.2em] text-primary uppercase">Impact at IFAD</p>
-            <Link href="/projects/document-intelligence" className="group inline-flex items-center gap-1 text-[14px] text-body hover:text-primary">
-              How it was built
-              <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden />
-            </Link>
-          </div>
-          <dl className="mt-6 grid gap-6 sm:grid-cols-3 sm:gap-0 sm:divide-x">
-            {facts.impact.map((f) => (
-              <div key={f.value} className="sm:px-8 sm:first:pl-0 sm:last:pr-0">
-                <dt className="sr-only">{f.label}</dt>
-                <dd className="stat-gradient-text text-[clamp(40px,4.6vw,60px)] leading-none font-semibold tracking-[-0.04em]">
-                  {f.value}
-                </dd>
-                <dd className="mt-3 max-w-[26ch] text-[15px] text-body">{f.label}</dd>
-              </div>
-            ))}
-          </dl>
-        </Card>
-      </Reveal>
     </div>
+  );
+}
+
+// Quiet proof line right under the hero: names only, no logos.
+export function ProofLine() {
+  const rows = [
+    { label: "Previously", value: "IFAD · Andela · AUCA Innovation Center · NetFella" },
+    { label: "Currently", value: "Founder, Trustplot" },
+  ];
+  return (
+    <div className="border-y bg-card">
+      <dl className={cn(container, "grid gap-3 py-7 md:grid-cols-2 md:gap-10")}>
+        {rows.map((r) => (
+          <div key={r.label} className="flex flex-wrap items-baseline gap-x-5 gap-y-1">
+            <dt className="w-24 font-mono text-[12px] tracking-[0.12em] text-muted-foreground uppercase">{r.label}</dt>
+            <dd className="text-[15px] font-medium text-ink">{r.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  );
+}
+
+// IFAD results with almost no colour: the numbers carry the authority.
+export function ImpactSection() {
+  return (
+    <section className="border-y bg-card" aria-labelledby="impact-heading">
+      <div className={cn(container, "section")}>
+        <SectionLabel n="02">Impact at IFAD</SectionLabel>
+        <h2 id="impact-heading" className="sr-only">
+          Impact at IFAD
+        </h2>
+        <dl className="grid gap-14 md:grid-cols-2 md:gap-10">
+          {facts.impact.map((f) => (
+            <Reveal key={f.value}>
+              <dt className="sr-only">{f.label}</dt>
+              <dd className="text-[clamp(72px,10vw,148px)] leading-[0.9] font-semibold tracking-[-0.05em] text-ink">
+                {f.value}
+              </dd>
+              <dd className="mt-6 max-w-[24ch] text-[20px] leading-snug text-body">{f.label}</dd>
+            </Reveal>
+          ))}
+        </dl>
+      </div>
+    </section>
   );
 }
 
