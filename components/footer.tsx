@@ -71,19 +71,20 @@ export default function Footer() {
       <div aria-hidden className="dawn-band pointer-events-none absolute inset-x-0 top-0 -z-10 h-56" />
       <div aria-hidden className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-ink/15 to-transparent dark:via-white/25" />
 
-      <div className={cn(container, "pt-24 md:pt-32")}>
+      <div className={cn(container, showPitch ? "pt-8" : "pt-24 md:pt-32")}>
         {showPitch && (
-          <Reveal className="mb-20 md:mb-28">
+          // The brand line gets the page's biggest type and a whole screen's worth of air.
+          <Reveal className="mb-16 flex min-h-[64vh] flex-col justify-center md:mb-24 md:min-h-[72vh]">
             <p className="font-mono text-[12px] tracking-[0.12em] text-muted-foreground uppercase">Contact</p>
-            <h2 className="mt-6 max-w-[14ch] text-[clamp(44px,7vw,104px)] leading-[0.96] font-semibold tracking-[-0.04em] text-ink">
+            <h2 className="mt-8 max-w-[12ch] text-[clamp(56px,9.5vw,152px)] leading-[0.92] font-semibold tracking-[-0.045em] text-ink">
               Building something that has to work?
             </h2>
-            <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
+            <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-4">
               <a
                 href={`mailto:${site.email}`}
-                className="group inline-flex h-12 items-center gap-2 rounded-full bg-ink px-6 text-[16px] font-semibold text-background transition-transform hover:-translate-y-0.5 motion-reduce:transform-none dark:bg-white dark:text-[#0b1536]"
+                className="group inline-flex h-14 items-center gap-2 rounded-full bg-ink px-8 text-[18px] font-semibold text-background transition-transform hover:-translate-y-0.5 motion-reduce:transform-none dark:bg-white dark:text-[#0b1536]"
               >
-                Let&apos;s talk <span className="arrow arrow-right" aria-hidden>→</span>
+                Let&apos;s talk <span className="arrow arrow-up" aria-hidden>↗</span>
               </a>
               <a href={`mailto:${site.email}`} className="font-mono text-[15px] text-body hover:text-ink">
                 {site.email}

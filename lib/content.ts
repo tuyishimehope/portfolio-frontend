@@ -138,11 +138,33 @@ export const secondary: Project[] = [
   },
 ];
 
+// Each capability is shown as a miniature system (flow), with its tools as quiet text.
+// Every tool listed here is on the résumé.
 export const capabilities = [
-  { label: "Backend", items: ["Python · FastAPI", "SQLAlchemy · Celery", "Java · Spring Boot", "Node.js · TypeScript"] },
-  { label: "Data & messaging", items: ["PostgreSQL · PostGIS", "Redis", "Azure Service Bus", "ETL pipelines"] },
-  { label: "Infrastructure", items: ["Docker · Linux", "GitHub Actions CI/CD", "Azure · AWS · GCP"] },
-  { label: "AI & testing", items: ["OCR · information extraction", "RAG", "Pytest · Playwright"] },
+  {
+    label: "Backend",
+    flow: ["request", "API", "response"],
+    note: "Fast, typed APIs with clear contracts and honest errors.",
+    items: ["Python · FastAPI", "Java · Spring Boot", "Node.js · TypeScript", "SQLAlchemy", "Pytest · Playwright"],
+  },
+  {
+    label: "Distributed work",
+    flow: ["API", "queue", "workers", "retry"],
+    note: "Slow work leaves the request; failures are retried and recovered.",
+    items: ["Celery · Redis", "Azure Service Bus", "Docker · Linux", "GitHub Actions CI/CD", "Azure · AWS · GCP"],
+  },
+  {
+    label: "Data",
+    flow: ["event", "pipeline", "PostgreSQL / PostGIS"],
+    note: "Schemas, spatial data and queries tuned for real workloads.",
+    items: ["PostgreSQL · PostGIS", "ETL pipelines", "Data modelling", "Query optimisation"],
+  },
+  {
+    label: "AI",
+    flow: ["document", "OCR", "extract", "retrieve", "review"],
+    note: "AI features with a human in the loop where it matters.",
+    items: ["OCR · information extraction", "RAG", "LLM applications"],
+  },
 ];
 
 export type Experience = {
@@ -222,7 +244,7 @@ export const facts = {
   relocation: "Rwandan citizen · familiar with the EU Blue Card and Dutch Highly Skilled Migrant processes",
   // Homepage leads with the two strongest numbers; volume (~100 docs/day) stays in the case study.
   impact: [
-    { value: "<200 ms", label: "API responses while document analysis ran in the background" },
+    { value: "<200 ms", label: "API response while document analysis ran asynchronously" },
     { value: "−60%", label: "failed jobs after retry and recovery work" },
   ],
 };

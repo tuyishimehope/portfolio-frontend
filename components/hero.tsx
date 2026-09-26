@@ -35,8 +35,8 @@ export default function Hero() {
             <span className="font-serif font-normal tracking-[-0.01em] italic">systems</span> for real-world problems.
           </h1>
           <p className={cn(enter, "mt-7 max-w-[540px] text-[19px] leading-[1.55] text-body")} style={after(280)}>
-            I&apos;m Hope. I design and build backend systems, distributed workflows and AI products, from architecture
-            to deployment.
+            I design and build backend systems, distributed workflows and AI products, from architecture and APIs to
+            deployment and reliability.
           </p>
           <div className={cn(enter, "mt-9")} style={after(380)}>
             <Button asChild size="lg" className={pillPrimary}>

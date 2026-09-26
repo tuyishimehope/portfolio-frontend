@@ -10,7 +10,7 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from "react";
-import { Check, RotateCcw } from "lucide-react";
+import { Check, ChevronsRight, RotateCcw } from "lucide-react";
 import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
@@ -57,14 +57,14 @@ const lbToApi = (i: number) => link(LB.x, LB.y + HALF + 2, APIS[i].x, APIS[i].y 
 const apiToQueue = (i: number) => link(APIS[i].x, APIS[i].y + HALF, QUEUE.x, QUEUE.y - HALF);
 const queueToWorker = (i: number) => link(QUEUE.x, QUEUE.y + HALF, WORKERS[i].x, WORKERS[i].y - HALF);
 
+// The story ends in production: things fail, and the system recovers.
 const STAGES = [
-  { label: "Feature request", detail: "“Uploads time out when documents are large.”", color: "var(--ink)" },
-  { label: "Specification", detail: "Accept in under 200 ms · process in the background · never lose a job", color: "var(--sky)" },
-  { label: "Architecture", detail: "Load balancer → APIs → queue → workers, with retries", color: "var(--primary)" },
-  { label: "Implementation + agent", detail: "worker.process(job) · an AI agent drafts edge-case tests", color: "var(--orange)", agent: true },
-  { label: "Tests", detail: "All checks passing", color: "var(--green)" },
-  { label: "Deploy", detail: "Rolled out behind the load balancer · health checks green", color: "var(--green)" },
-  { label: "Observe", detail: "Metrics, logs and traces wired in before the first user arrives", color: "var(--sky)" },
+  { label: "Problem", detail: "“Large document uploads time out before processing completes.”", color: "var(--ink)" },
+  { label: "Design", detail: "Latency · scale · failure modes. Never hold the HTTP request open.", color: "var(--sky)" },
+  { label: "Architect", detail: "202 Accepted → queue the job → process asynchronously → track status", color: "var(--primary)" },
+  { label: "Build", detail: "Implementation, with AI-assisted development", color: "var(--orange)", agent: true },
+  { label: "Verify", detail: "Unit · integration · failure testing", color: "var(--green)" },
+  { label: "Production", detail: "Deploy · observe · fail · recover", color: "var(--green)" },
 ] as const;
 
 const STEP_MS = 1400;
@@ -164,6 +164,8 @@ export default function SystemCanvas({ className }: { className?: string }) {
   const [view, setView] = useState<View>(EMPTY);
   const timers = useRef(new Set<number>());
   const motion = useRef(true);
+  // Set once a visitor interacts; the automatic demo failure then stays out of their way.
+  const touched = useRef(false);
 
   const render = useCallback(() => {
     const s = sim.current;
@@ -381,6 +383,7 @@ export default function SystemCanvas({ className }: { className?: string }) {
     const s = sim.current;
     const api = s.apis[0];
     if (!api.up || !api.inPool) return;
+    touched.current = true;
     track("demo_api_taken_down", {});
     api.up = false;
     api.failedChecks = 0;
@@ -396,8 +399,9 @@ export default function SystemCanvas({ className }: { className?: string }) {
   }, [later, log, render]);
 
   const crashWorker = useCallback(
-    (index?: number) => {
+    (index?: number, auto = false) => {
       const s = sim.current;
+      if (!auto) touched.current = true;
       const alive = s.workers.filter((w) => w.status !== "offline").length;
       if (alive <= 1) return;
       const i =
@@ -408,7 +412,7 @@ export default function SystemCanvas({ className }: { className?: string }) {
         })();
       const w = s.workers[i];
       if (!w || w.status === "offline") return;
-      track("demo_worker_crashed", { worker: i + 1 });
+      if (!auto) track("demo_worker_crashed", { worker: i + 1 });
       const lost = w.job;
       const attempt = lost?.attempts[lost.attempts.length - 1];
       w.status = "offline";
@@ -449,7 +453,18 @@ export default function SystemCanvas({ className }: { className?: string }) {
     [later, log, recover, render],
   );
 
+  // "Production: deploy · observe · fail · recover" — shortly after going live, one
+  // worker fails by itself so every visitor sees the recovery, even without clicking.
+  useEffect(() => {
+    if (phase !== "live" || !visible || touched.current) return;
+    const id = window.setTimeout(() => {
+      if (!touched.current && sim.current.workers.some((w) => w.status === "busy")) crashWorker(undefined, true);
+    }, 4200);
+    return () => window.clearTimeout(id);
+  }, [phase, visible, crashWorker]);
+
   const replay = () => {
+    touched.current = false;
     timers.current.forEach((id) => window.clearTimeout(id));
     timers.current.clear();
     sim.current = freshSim();
@@ -494,7 +509,7 @@ export default function SystemCanvas({ className }: { className?: string }) {
             <span className={cn("relative inline-flex size-2 rounded-full", phase === "live" ? "bg-green" : "bg-sky")} />
           </span>
           <span className="truncate">
-            {phase === "live" ? "live" : "building"}
+            {phase === "live" ? "live" : `${pad(step + 1, 2)} / ${pad(STAGES.length, 2)} · ${STAGES[step].label.toLowerCase()}`}
             <span className="hidden sm:inline"> · document-pipeline</span>
           </span>
         </p>
@@ -527,9 +542,11 @@ export default function SystemCanvas({ className }: { className?: string }) {
             <button
               type="button"
               onClick={() => setPhase("live")}
-              className="inline-flex min-h-8 items-center rounded-full px-2 hover:bg-muted hover:text-ink"
+              aria-label="Skip to the live system"
+              title="Skip to the live system"
+              className="inline-flex size-8 items-center justify-center rounded-full text-muted-foreground/70 hover:bg-muted hover:text-ink"
             >
-              skip intro →
+              <ChevronsRight className="size-4" aria-hidden />
             </button>
           )}
         </div>

@@ -3,7 +3,7 @@ import Reveal from "@/components/reveal";
 import {
   AboutBento,
   CapabilitiesGrid,
-  ExperienceList,
+  ExperienceCompact,
   ImpactSection,
   MoreLink,
   PostList,
@@ -34,9 +34,10 @@ export default function Home() {
         <h2 className="-mt-4 mb-12 max-w-[18ch] text-[clamp(36px,4.6vw,60px)] leading-[1.02] font-semibold tracking-[-0.03em] md:-mt-6 md:mb-16">
           Work that had to keep working.
         </h2>
+        {/* Trustplot leads (product and founder); DocFlow follows smaller (system design) */}
         <div className="space-y-16 md:space-y-24">
-          {projects.map((p) => (
-            <Reveal key={p.slug}>
+          {projects.map((p, i) => (
+            <Reveal key={p.slug} className={i === 0 ? "" : "md:w-[72%]"}>
               <ProjectCard project={p} />
             </Reveal>
           ))}
@@ -66,7 +67,7 @@ export default function Home() {
       <section className="section border-t">
         <div className={container}>
           <SectionLabel n="05">Experience</SectionLabel>
-          <ExperienceList />
+          <ExperienceCompact />
         </div>
       </section>
 
@@ -75,7 +76,7 @@ export default function Home() {
         <section className="section border-t">
           <div className={container}>
             <SectionLabel n="06">Writing</SectionLabel>
-            <PostList limit={3} />
+            <PostList limit={3} compact />
             <MoreLink href="/blogs">All writing</MoreLink>
           </div>
         </section>

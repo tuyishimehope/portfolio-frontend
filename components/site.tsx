@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, ArrowUpRight, Container, Database, GraduationCap, MapPin, Server, Sparkles, type LucideIcon } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, GraduationCap, MapPin, type LucideIcon } from "lucide-react";
 import type { CSSProperties } from "react";
 import AutoVideo from "@/components/auto-video";
 import PipelineDiagram from "@/components/pipeline-diagram";
@@ -319,64 +319,106 @@ export function Portrait() {
   );
 }
 
-// Bento: Backend is the large tile, the rest fill around it.
-const capabilityTiles: Record<string, { icon: LucideIcon; span: string; blurb: string }> = {
-  Backend: { icon: Server, span: "md:col-span-2 md:row-span-2", blurb: "APIs and services that stay fast under real load." },
-  "Data & messaging": { icon: Database, span: "md:col-span-2", blurb: "Schemas, queues and pipelines." },
-  Infrastructure: { icon: Container, span: "", blurb: "Ship it the same way every time." },
-  "AI & testing": { icon: Sparkles, span: "", blurb: "Extraction, retrieval, and proof it works." },
-};
-
+// Capabilities as four miniature systems: the flow is the headline, tools are footnotes.
+// Same visual language as the hero canvas and the case-study diagrams.
 export function CapabilitiesGrid() {
   return (
-    <div className="grid gap-4 md:auto-rows-[minmax(180px,auto)] md:grid-cols-4">
-      {capabilities.map((c, i) => {
-        const tile = capabilityTiles[c.label];
-        const big = i === 0;
-        const Icon = tile?.icon ?? Server;
-        return (
-          <Reveal key={c.label} delay={i * 90} className={cn("h-full", tile?.span)}>
-            <Card
-              className={cn(
-                "group h-full gap-0 rounded-2xl p-6 ring-border transition-[box-shadow,transform] duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_36px_-18px_rgb(10_37_64/0.3)] motion-reduce:transform-none",
-                big && "md:p-8",
-              )}
+    <div className="grid gap-4 md:grid-cols-2">
+      {capabilities.map((c, i) => (
+        <Reveal key={c.label} delay={i * 90} className="h-full">
+          <Card className="h-full gap-0 rounded-3xl p-6 ring-ink/[0.06] md:p-8">
+            <p className="font-mono text-[12px] tracking-[0.12em] text-muted-foreground uppercase">
+              {String(i + 1).padStart(2, "0")} · {c.label}
+            </p>
+
+            {/* Miniature system */}
+            <ol
+              aria-label={`${c.label}: ${c.flow.join(" to ")}`}
+              className="mt-6 flex flex-wrap items-center gap-x-1.5 gap-y-2 rounded-2xl border border-dashed bg-background/60 p-4 bg-[radial-gradient(var(--border)_1px,transparent_1.2px)] bg-[size:14px_14px]"
             >
-              <span
-                className={cn(
-                  "flex items-center justify-center rounded-xl border border-primary/15 bg-gradient-to-br from-sky/25 to-primary/10 text-primary shadow-[0_0_24px_-8px] shadow-primary/40",
-                  big ? "size-12" : "size-10",
-                )}
-              >
-                <Icon className={big ? "size-6" : "size-5"} aria-hidden />
-              </span>
-              <h3 className={cn("mt-5 font-semibold tracking-tight", big ? "text-2xl md:text-3xl" : "text-lg")}>{c.label}</h3>
-              <p className="mt-1.5 text-[15px] text-body">{tile?.blurb}</p>
-              {big && (
-                <pre
-                  aria-label="Example: an upload is accepted immediately and processed by background workers"
-                  className="mt-6 hidden overflow-x-auto rounded-xl border bg-muted/60 p-4 font-mono text-[12.5px] leading-6 text-body md:block"
-                >
-                  <span className="text-primary">POST</span> /documents{"      "}<span className="text-ink">→ 202 Accepted</span>
-                  {"\n"}<span className="text-muted-foreground">  ↳ queue</span>{"    "}document.analyze
-                  {"\n"}<span className="text-muted-foreground">  ↳ worker</span>{"   "}ocr · extract · review
-                  {"\n"}<span className="text-muted-foreground">  ↳ on fail</span>{"  "}retry, then recover
-                </pre>
-              )}
-              <ul className={cn("mt-auto flex flex-wrap gap-2 pt-6", big && "md:pt-10")}>
-                {c.items.map((item) => (
-                  <li
-                    key={item}
-                    className="rounded-full border bg-background/60 px-3 py-1 font-mono text-[12px] text-ink"
+              {c.flow.map((step, s) => (
+                <li key={step} className="flex items-center gap-1.5">
+                  {s > 0 && <ArrowRight className="size-3.5 shrink-0 text-muted-foreground" aria-hidden />}
+                  <span
+                    className={cn(
+                      "rounded-lg border px-2.5 py-1 font-mono text-[12.5px] whitespace-nowrap shadow-[0_1px_2px_rgb(11_21_54/0.06)]",
+                      s === c.flow.length - 1 && c.label === "Distributed work"
+                        ? "border-sun/70 bg-sun-50 text-ink"
+                        : "bg-card text-ink",
+                    )}
                   >
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </Card>
-          </Reveal>
-        );
-      })}
+                    {step}
+                  </span>
+                </li>
+              ))}
+            </ol>
+
+            <p className="mt-5 text-[16px] leading-relaxed text-ink">{c.note}</p>
+            <p className="mt-auto pt-5 font-mono text-[12.5px] leading-relaxed text-muted-foreground">{c.items.join(" · ")}</p>
+          </Card>
+        </Reveal>
+      ))}
+    </div>
+  );
+}
+
+// Homepage version of Experience: one quiet row per role, expandable to its one-line
+// impact (native <details>, so it works with keyboard and screen readers for free).
+// The full timeline lives on the About page.
+const year = (d: string) => d.match(/\d{4}/)?.[0] ?? d;
+
+export function ExperienceCompact() {
+  return (
+    <div>
+      <ul className="border-t">
+        {experience.map((e) => {
+          const from = year(e.start);
+          const to = e.end === "Now" ? "Now" : e.kind === "education" ? "" : year(e.end);
+          const years = !to || to === from ? from : `${from} — ${to}`;
+          const org = e.org.replace(/\s*\(.*\)$/, "").replace(/, (Kigali|Rome)$/, "");
+          return (
+            <li key={e.org} className="border-b">
+              <details className="group">
+                <summary className="grid cursor-pointer list-none grid-cols-[88px_minmax(0,1fr)_auto] items-baseline gap-4 py-5 md:grid-cols-[160px_minmax(0,1fr)_minmax(0,1fr)_auto] md:gap-8 [&::-webkit-details-marker]:hidden">
+                  <span className={cn("font-mono text-[13px]", e.end === "Now" ? "text-primary" : "text-muted-foreground")}>
+                    {years}
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-[18px] font-semibold tracking-tight text-ink">{org}</span>
+                    <span className="block text-[15px] text-body md:hidden">{e.role}</span>
+                  </span>
+                  <span className="hidden text-[16px] text-body md:block">{e.role}</span>
+                  <span
+                    aria-hidden
+                    className="flex size-8 items-center justify-center self-center rounded-full border text-ink transition-transform duration-200 group-open:rotate-45"
+                  >
+                    +
+                  </span>
+                </summary>
+                <p className="-mt-1 max-w-3xl pb-6 text-[16px] leading-relaxed text-body md:ml-[192px]">
+                  {e.impact}
+                  {e.href && (
+                    <Link href={e.href} className="ml-2 whitespace-nowrap text-primary hover:text-primary-hover">
+                      Case study <span className="arrow arrow-right" aria-hidden>→</span>
+                    </Link>
+                  )}
+                </p>
+              </details>
+            </li>
+          );
+        })}
+      </ul>
+      <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3">
+        <MoreLink href="/about">Full timeline</MoreLink>
+        <a
+          href={site.resume}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-8 inline-block text-primary hover:text-primary-hover"
+        >
+          Full résumé <span className="arrow arrow-up" aria-hidden>↗</span>
+        </a>
+      </div>
     </div>
   );
 }
@@ -483,7 +525,7 @@ export function ExperienceList() {
   );
 }
 
-export function PostList({ limit }: { limit?: number }) {
+export function PostList({ limit, compact = false }: { limit?: number; compact?: boolean }) {
   return (
     <ul className="border-t">
       {posts.slice(0, limit).map((p) => (
@@ -496,7 +538,7 @@ export function PostList({ limit }: { limit?: number }) {
               <h3 className="text-[clamp(22px,2.4vw,30px)] leading-tight font-semibold tracking-[-0.02em] text-ink transition-colors group-hover:text-primary">
                 {p.title}
               </h3>
-              <p className="mt-3 max-w-2xl text-[17px] leading-relaxed text-body">{p.description}</p>
+              {!compact && <p className="mt-3 max-w-2xl text-[17px] leading-relaxed text-body">{p.description}</p>}
               <ul className="mt-4 flex flex-wrap gap-2">
                 {p.tags.map((t) => (
                   <li key={t} className="rounded-full border bg-card px-3 py-1 font-mono text-[12px] text-ink">
@@ -583,8 +625,8 @@ export function AboutBento() {
         <Card className={tile}>
           <BentoIcon icon={MapPin} />
           <h3 className="mt-5 text-lg font-semibold tracking-tight">{site.location}</h3>
-          <p className="mt-1 text-[15px] text-ink">{facts.sponsorship}</p>
-          <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">{facts.relocation}</p>
+          {/* Visa-process detail lives on the About page, not the homepage scan */}
+          <p className="mt-1 text-[15px] text-body">Open to relocation · Sponsorship required</p>
         </Card>
       </Reveal>
 
@@ -605,8 +647,8 @@ export function AboutBento() {
 // Quiet proof line right under the hero: names only, no logos.
 export function ProofLine() {
   const rows = [
-    { label: "Previously", value: "IFAD · Andela · AUCA Innovation Center · NetFella" },
-    { label: "Currently", value: "Founder, Trustplot" },
+    { label: "Previously", value: "IFAD · Andela · AUCA · NetFella" },
+    { label: "Now", value: "Founder, Trustplot" },
     { label: "Education", value: `${facts.education.short} · ${facts.education.schoolShort} · ${facts.education.year}` },
   ];
   return (
@@ -623,27 +665,29 @@ export function ProofLine() {
   );
 }
 
-// IFAD results with almost no colour: the numbers carry the authority.
+// IFAD results as a typographic moment: one number at a time, lots of air, no colour.
+// Each value and its label are read once (no visually hidden duplicate).
 export function ImpactSection() {
   return (
     <section className="border-y bg-card" aria-labelledby="impact-heading">
-      <div className={cn(container, "section")}>
+      <div className={cn(container, "pt-24 md:pt-32")}>
         <SectionLabel n="02">Impact at IFAD</SectionLabel>
         <h2 id="impact-heading" className="sr-only">
           Impact at IFAD
         </h2>
-        <dl className="grid gap-14 md:grid-cols-2 md:gap-10">
-          {facts.impact.map((f) => (
-            <Reveal key={f.value}>
-              <dt className="sr-only">{f.label}</dt>
-              <dd className="text-[clamp(72px,10vw,148px)] leading-[0.9] font-semibold tracking-[-0.05em] text-ink">
-                {f.value}
-              </dd>
-              <dd className="mt-6 max-w-[24ch] text-[20px] leading-snug text-body">{f.label}</dd>
-            </Reveal>
-          ))}
-        </dl>
       </div>
+      <ul className={cn(container, "pb-12 md:pb-20")}>
+        {facts.impact.map((f) => (
+          <li key={f.value}>
+            <Reveal className="flex flex-col items-center py-14 text-center md:py-24">
+              <p className="text-[clamp(88px,15vw,220px)] leading-[0.85] font-semibold tracking-[-0.055em] text-ink">
+                {f.value}
+              </p>
+              <p className="mt-8 max-w-[22ch] text-[clamp(20px,2vw,26px)] leading-snug text-body">{f.label}</p>
+            </Reveal>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
