@@ -5,6 +5,7 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import PageShell from "@/components/page-shell";
 import AnalyticsConsent from "@/components/analytics-consent";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -69,6 +70,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: `(()=>{let t="system";try{t=localStorage.getItem("theme")||"system"}catch{}const d=t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dark",d);document.documentElement.style.colorScheme=d?"dark":"light"})()` }} />
       </head>
       <body className="min-h-full flex flex-col">
+        <SpeedInsights/>
         <a href="#top" className="skip-link">
           Skip to content
         </a>
