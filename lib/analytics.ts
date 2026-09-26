@@ -99,7 +99,14 @@ let listening = false;
 export function initAnalytics() {
   if (posthog.__loaded) return;
   const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
-  if (!analyticsEnabled || !key) return;
+  if (!analyticsEnabled || !key) {
+    // NEXT_PUBLIC_* values are inlined at build time: set the key in the hosting
+    // provider's environment (not only in a local .env) and redeploy.
+    if (process.env.NODE_ENV === "production") {
+      console.warn("[analytics] PostHog is off: NEXT_PUBLIC_POSTHOG_KEY was not set when this build ran.");
+    }
+    return;
+  }
 
   // Your own visits: open any page once with ?notrack=1 to exclude this browser for good.
   if (new URLSearchParams(window.location.search).get("notrack") === "1") markInternal();

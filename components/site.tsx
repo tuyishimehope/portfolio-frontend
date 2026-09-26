@@ -389,13 +389,16 @@ export function ExperienceList() {
       <ol className="relative">
         {experience.map((e, i) => {
           const latest = e.end === "Now";
+          const education = e.kind === "education";
           const last = i === experience.length - 1;
           return (
             <li key={e.org} className="relative grid grid-cols-[28px_minmax(0,1fr)] gap-x-4 md:grid-cols-[120px_40px_minmax(0,1fr)] md:gap-x-6">
               {/* Years (desktop) */}
               <div className="hidden pt-6 text-right font-mono text-[13px] leading-tight tracking-[0.04em] md:block">
                 <span className={cn("block", latest ? "text-primary" : "text-ink")}>{e.start}</span>
-                <span className={cn("block", latest ? "text-primary" : "text-muted-foreground")}>→ {e.end}</span>
+                <span className={cn("block", latest ? "text-primary" : "text-muted-foreground")}>
+                  {education ? e.end : `→ ${e.end}`}
+                </span>
               </div>
 
               {/* Rail + node */}
@@ -407,6 +410,11 @@ export function ExperienceList() {
                     last ? "h-9" : "bottom-0",
                   )}
                 />
+                {education ? (
+                  <span className="relative mt-6 flex size-6 items-center justify-center rounded-full border border-sky bg-sky-50 text-ink">
+                    <GraduationCap className="size-3.5" />
+                  </span>
+                ) : (
                 <span className="relative mt-7 flex size-4 items-center justify-center">
                   {latest && (
                     <span className="absolute inline-flex size-full animate-ping rounded-full bg-primary/40 motion-reduce:hidden" />
@@ -420,6 +428,7 @@ export function ExperienceList() {
                     )}
                   />
                 </span>
+                )}
               </div>
 
               {/* Card */}
@@ -428,12 +437,18 @@ export function ExperienceList() {
                   className={cn(
                     "group rounded-2xl border bg-card p-5 transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-[0_16px_36px_-18px_rgb(10_37_64/0.3)] motion-reduce:transform-none md:p-6",
                     latest && "border-primary/30 shadow-[0_16px_40px_-24px] shadow-primary/40",
+                    education && "border-sky/60 bg-sky-50",
                   )}
                 >
                   <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
                     <span className="font-mono text-[12px] tracking-[0.06em] text-muted-foreground md:hidden">
-                      {e.start} – {e.end}
+                      {education ? `${e.start} · ${e.end}` : `${e.start} – ${e.end}`}
                     </span>
+                    {education && (
+                      <span className="rounded-full border border-sky bg-card px-2.5 py-0.5 text-[11px] font-medium text-ink">
+                        Education
+                      </span>
+                    )}
                     {latest && (
                       <span className="rounded-full border border-primary/25 bg-primary/10 px-2.5 py-0.5 text-[11px] font-medium text-primary">
                         Current
@@ -592,10 +607,11 @@ export function ProofLine() {
   const rows = [
     { label: "Previously", value: "IFAD · Andela · AUCA Innovation Center · NetFella" },
     { label: "Currently", value: "Founder, Trustplot" },
+    { label: "Education", value: `${facts.education.short} · ${facts.education.schoolShort} · ${facts.education.year}` },
   ];
   return (
     <div className="border-y bg-card">
-      <dl className={cn(container, "grid gap-3 py-7 md:grid-cols-2 md:gap-10")}>
+      <dl className={cn(container, "grid gap-3 py-6 md:grid-cols-[1.3fr_0.8fr_1.1fr] md:gap-8")}>
         {rows.map((r) => (
           <div key={r.label} className="flex flex-wrap items-baseline gap-x-5 gap-y-1">
             <dt className="w-24 font-mono text-[12px] tracking-[0.12em] text-muted-foreground uppercase">{r.label}</dt>

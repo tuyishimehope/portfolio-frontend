@@ -15,11 +15,11 @@ const enter = "animate-in fade-in slide-in-from-bottom-4 fill-mode-both duration
 
 export default function Hero() {
   return (
-    <section className="relative isolate overflow-hidden">
+    <section className="relative isolate overflow-hidden lg:flex lg:flex-1 lg:items-center">
       <div
         className={cn(
           container,
-          "grid gap-12 pt-12 pb-16 md:pt-16 lg:min-h-[calc(90vh-4rem)] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.02fr)] lg:items-center lg:gap-14 lg:pb-20",
+          "hero-grid grid gap-12 pt-12 pb-16 md:pt-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.02fr)] lg:items-center lg:gap-14 lg:py-8",
         )}
       >
         {/* Copy */}
@@ -28,7 +28,7 @@ export default function Hero() {
             Software engineer · Backend · Distributed systems · AI
           </p>
           <h1
-            className={cn(enter, "mt-6 text-[clamp(48px,6vw,92px)] leading-[0.97] font-semibold tracking-[-0.035em] text-ink")}
+            className={cn(enter, "hero-title mt-6 text-[clamp(48px,6vw,92px)] leading-[0.97] font-semibold tracking-[-0.035em] text-ink")}
             style={after(160)}
           >
             Building reliable{" "}
@@ -51,11 +51,9 @@ export default function Hero() {
         </div>
 
         {/* Interactive system, floating over the dawn */}
-        <div className={cn(enter, "zoom-in-95 relative")} style={after(220)}>
+        <div className={cn(enter, "hero-canvas zoom-in-95 relative w-full lg:justify-self-end")} style={after(220)}>
           <div aria-hidden className="dawn-glow pointer-events-none absolute -inset-[30%] -z-10 blur-2xl" />
-          <div className="h-[520px] sm:h-[500px]">
-            <SystemCanvas />
-          </div>
+          <SystemCanvas />
         </div>
       </div>
     </section>

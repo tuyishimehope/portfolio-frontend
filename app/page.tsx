@@ -22,8 +22,11 @@ import { posts, projects } from "@/lib/content";
 export default function Home() {
   return (
     <main id="top">
-      <Hero />
-      <ProofLine />
+      {/* First screen: hero + proof line fill exactly one viewport on desktop */}
+      <div className="lg:flex lg:min-h-[calc(100svh-4rem)] lg:flex-col">
+        <Hero />
+        <ProofLine />
+      </div>
 
       {/* Selected work */}
       <section id="work" className={`${container} section`}>

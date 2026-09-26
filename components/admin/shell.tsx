@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { ArrowUpRight, FileText, FolderKanban, LayoutDashboard, Layers, Mail, Menu, Settings, X } from "lucide-react";
 import { useState } from "react";
 import { useAdminData } from "./store";
+import ThemeSwitcher from "@/components/theme-switcher";
 
 const navigation = [
   { href: "/admin", name: "Overview", icon: LayoutDashboard },
@@ -29,7 +30,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         <div className="mt-5 flex items-center gap-3 px-2"><span className="flex size-9 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">HT</span><div><p className="text-sm font-medium">Hope Tuyishime</p><p className="text-xs text-muted-foreground">Development workspace</p></div></div>
       </aside>
       <div className="lg:pl-60">
-        <header className="flex h-20 items-center justify-between gap-4 border-b bg-card px-5 sm:px-9"><div className="flex items-center gap-3"><button type="button" onClick={() => setOpen(!open)} aria-label={open ? "Close navigation" : "Open navigation"} aria-expanded={open} aria-controls="mobile-admin-nav" className="admin-icon lg:hidden">{open ? <X className="size-5" /> : <Menu className="size-5" />}</button><p className="text-sm text-body">Workspace <span className="mx-3 text-muted-foreground/50">/</span><span className="font-medium text-foreground">{current}</span></p></div><Link href="/" className="flex items-center gap-2 text-xs text-body hover:text-primary">View site <ArrowUpRight className="size-4" /></Link></header>
+        <header className="flex h-20 items-center justify-between gap-4 border-b bg-card px-5 sm:px-9"><div className="flex items-center gap-3"><button type="button" onClick={() => setOpen(!open)} aria-label={open ? "Close navigation" : "Open navigation"} aria-expanded={open} aria-controls="mobile-admin-nav" className="admin-icon admin-mobile-toggle">{open ? <X className="size-5" /> : <Menu className="size-5" />}</button><p className="text-sm text-body">Workspace <span className="mx-3 text-muted-foreground/50">/</span><span className="font-medium text-foreground">{current}</span></p></div><div className="flex items-center gap-3"><ThemeSwitcher /><Link href="/" className="hidden items-center gap-2 text-xs text-body hover:text-primary sm:flex">View site <ArrowUpRight className="size-4" /></Link></div></header>
         {open && <nav id="mobile-admin-nav" aria-label="Mobile admin navigation" className="grid gap-1 border-b bg-card p-4 lg:hidden">{navigation.map(({ href, name }) => <Link key={href} href={href} onClick={() => setOpen(false)} aria-current={pathname === href ? "page" : undefined} className={`admin-nav ${pathname === href ? "admin-nav-active" : ""}`}>{name}</Link>)}</nav>}
         <div className="border-b border-primary/10 bg-primary/5 px-5 py-3 text-xs leading-relaxed text-body sm:px-9"><span className="font-semibold text-primary">Development preview</span><span className="mx-2">·</span>Edits stay in this browser. Publishing and visitor messages aren’t connected. Production access is blocked until owner authentication is added.</div>
         <main id="top" className="mx-auto max-w-[1480px] px-5 py-8 sm:px-9 sm:py-10">{children}</main>

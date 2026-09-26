@@ -316,6 +316,19 @@
   }
 }
 
+/* First screen on shorter laptops: keep hero + proof line within one viewport */
+@media (min-width: 1024px) and (max-height: 880px) {
+  .hero-canvas {
+    max-width: 440px;
+  }
+  .hero-grid {
+    padding-block: 0.75rem;
+  }
+  .hero-title {
+    font-size: clamp(44px, 4.9vw, 74px);
+  }
+}
+
 /* Scroll-entry reveal */
 .reveal {
   opacity: 0;
@@ -473,3 +486,5 @@ a:focus-visible .arrow-up {
 .admin-input:focus { outline: 2px solid color-mix(in srgb, var(--primary) 30%, transparent); outline-offset: 1px; border-color: var(--primary); }
 textarea.admin-input { resize: vertical; }
 @media (max-width: 639px) { .admin-input { font-size: 16px; } }
+
+@media (min-width: 1024px) { .admin-mobile-toggle { display: none; } }

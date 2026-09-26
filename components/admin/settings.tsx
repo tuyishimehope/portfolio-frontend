@@ -6,10 +6,10 @@ import { PageTitle } from "./ui";
 
 export default function Settings() {
   const data = useAdminData();
-  return <SettingsForm key={JSON.stringify(data.profile)} profile={data.profile} />;
-}
-function SettingsForm({ profile }: { profile: ReturnType<typeof useAdminData>["profile"] }) {
   const [notice, setNotice] = useState("");
+  return <SettingsForm key={JSON.stringify(data.profile)} profile={data.profile} notice={notice} setNotice={setNotice} />;
+}
+function SettingsForm({ profile, notice, setNotice }: { profile: ReturnType<typeof useAdminData>["profile"]; notice: string; setNotice: (notice: string) => void }) {
   const [resume, setResume] = useState(profile.resume);
   const [dirty, setDirty] = useState(false);
   const safeResume = /^https:\/\//i.test(resume) || /^\/(?!\/)/.test(resume);

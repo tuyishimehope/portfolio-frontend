@@ -152,6 +152,7 @@ export type Experience = {
   org: string;
   impact: string;
   href?: string; // internal case study, when there is one
+  kind?: "education"; // a milestone rather than a job
 };
 
 export const experience: Experience[] = [
@@ -163,6 +164,14 @@ export const experience: Experience[] = [
     impact:
       "Founded and engineered a land and property intelligence platform for Rwanda: UPI parcel search, interactive mapping, zoning and risk screening, reference valuation and automated reports, on PostGIS and ArcGIS data.",
     href: "/projects/trustplot",
+  },
+  {
+    start: "Oct 2025",
+    end: "Graduated",
+    role: "BSc (Honours) Software Engineering",
+    org: "Adventist University of Central Africa (AUCA)",
+    impact: "Graduated in software engineering with Distinction.",
+    kind: "education",
   },
   {
     start: "Mar 2025",
@@ -202,8 +211,11 @@ export const experience: Experience[] = [
 export const facts = {
   education: {
     degree: "Bachelor of Science (Honours) in Software Engineering",
+    short: "BSc Software Engineering",
+    graduated: "Oct 2025",
     honours: "Distinction",
     school: "Adventist University of Central Africa",
+    schoolShort: "AUCA",
     year: "2025",
   },
   sponsorship: "Requires visa sponsorship · Open to relocation within the EU",

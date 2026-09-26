@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import PostBody from "@/components/post-body";
+import ReadTracker from "@/components/read-tracker";
 import { BackLink, after, container, enter } from "@/components/site";
 import { cn } from "@/lib/utils";
 import { projects, site } from "@/lib/content";
@@ -101,6 +102,7 @@ export default async function PostPage(props: PageProps<"/blogs/[slug]">) {
 
         <article className="min-w-0 max-w-[68ch] pt-6">
           <PostBody blocks={post.blocks} />
+          <ReadTracker slug={post.slug} />
 
           {project && (
             <aside className="mt-16 rounded-3xl bg-sky-50 p-6 ring-1 ring-ink/[0.06] md:p-8">
