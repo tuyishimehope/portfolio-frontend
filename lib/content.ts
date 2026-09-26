@@ -6,9 +6,9 @@ import { allPosts, formatDate, readTime } from "@/lib/posts";
 export const site = {
   name: "Hope Tuyishime Wilberforce",
   email: "tuyishimehope01@gmail.com",
-  resume: "/resume.pdf", // copied from doc/
-  linkedin: "https://www.linkedin.com/in/hope-tuyishime/",
-  github: "https://github.com/tuyishimehope",
+  resume: "/resume.pdf/?utm_source=cv&utm_medium=pdf", // copied from doc/
+  linkedin: "https://www.linkedin.com/in/hope-tuyishime/?utm_source=cv&utm_medium=pdf",
+  github: "https://github.com/tuyishimehope/?utm_source=cv&utm_medium=pdf",
   location: "Kigali, Rwanda",
 };
 
