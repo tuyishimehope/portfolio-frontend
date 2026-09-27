@@ -611,7 +611,7 @@ export function AboutBento() {
               </span>
               Now
             </p>
-            <h3 className="mt-4 text-lg font-semibold tracking-tight">Founder, Trustplot</h3>
+            <h3 className="mt-4 text-lg font-semibold tracking-tight">Founder & Software Engineer at Trustplot</h3>
             <p className="mt-1 text-[15px] text-body">Land and property intelligence for Rwanda · since May 2026</p>
             <p className="mt-4 text-[15px] text-primary">
               Case study <span className="arrow arrow-right" aria-hidden>→</span>
@@ -648,7 +648,7 @@ export function AboutBento() {
 export function ProofLine() {
   const rows = [
     { label: "Previously", value: "IFAD · Andela · AUCA · NetFella" },
-    { label: "Now", value: "Founder, Trustplot" },
+    { label: "Now", value: "Founder & Software Engineer at Trustplot" },
     { label: "Education", value: `${facts.education.short} · ${facts.education.schoolShort} · ${facts.education.year}` },
   ];
   return (

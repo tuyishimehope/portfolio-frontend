@@ -39,6 +39,7 @@ export type Project = {
   repo?: string; // public source code
   live?: string; // live product URL
   architecture?: Pipeline; // shown on the case study when the main media isn't already a diagram
+  screenshots?: { src: string; alt: string; width: number; height: number }[]; // case-study page only
   // Case-study body. Keep every claim defensible in an interview.
   caseStudy: { heading: string; body: string; points?: string[] }[];
 };
@@ -57,7 +58,15 @@ export const flagship: Project = {
     label: "Trustplot demo: searching a parcel by UPI and reviewing its boundary, zoning, risk and reference value",
     poster: "/projects/trustplot.webp",
   },
-  live: "https://trustplot-frontend.vercel.app/",
+  live: "https://trustplot.hopetuyishime.com/",
+  screenshots: [
+    {
+      src: "/projects/trustplot.webp",
+      alt: "Trustplot property workspace: a parcel boundary on the satellite map beside its details",
+      width: 2000,
+      height: 1200,
+    },
+  ],
 
   accent: "sky",
   caseStudy: [
@@ -268,7 +277,7 @@ export const experience: Experience[] = [
   {
     start: "May 2026",
     end: "Now",
-    role: "Founder",
+    role: "Founder & Software Engineer",
     org: "Trustplot, Kigali",
     impact:
       "Founded and engineered a land and property intelligence platform for Rwanda: UPI parcel search, interactive mapping, zoning and risk screening, reference valuation and automated reports, on PostGIS and ArcGIS data.",

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowUpRight, Code2 } from "lucide-react";
@@ -86,6 +87,26 @@ export default async function CaseStudyPage(props: PageProps<"/projects/[slug]">
           <ProjectVisual project={project} full />
         </div>
       </div>
+
+      {project.screenshots && (
+        <section className={`${container} pt-16 md:pt-24`}>
+          <p className="meta mb-6">Screenshots</p>
+          <div className="grid gap-6">
+            {project.screenshots.map((shot) => (
+              <figure key={shot.src} className="overflow-hidden rounded-2xl border bg-card">
+                <Image
+                  src={shot.src}
+                  alt={shot.alt}
+                  width={shot.width}
+                  height={shot.height}
+                  sizes="(min-width: 1200px) 1136px, 100vw"
+                  className="h-auto w-full"
+                />
+              </figure>
+            ))}
+          </div>
+        </section>
+      )}
 
       {project.architecture && (
         <section className={`${container} pt-16 md:pt-24`}>
