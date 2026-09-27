@@ -34,10 +34,10 @@ export default function Home() {
         <h2 className="-mt-4 mb-12 max-w-[18ch] text-[clamp(36px,4.6vw,60px)] leading-[1.02] font-semibold tracking-[-0.03em] md:-mt-6 md:mb-16">
           Work that had to keep working.
         </h2>
-        {/* Trustplot leads (product and founder); DocFlow follows smaller (system design) */}
+        {/* Every project card spans the full width, in the order listed in lib/content. */}
         <div className="space-y-16 md:space-y-24">
-          {projects.map((p, i) => (
-            <Reveal key={p.slug} className={i === 0 ? "" : "md:w-[72%]"}>
+          {projects.map((p) => (
+            <Reveal key={p.slug}>
               <ProjectCard project={p} />
             </Reveal>
           ))}

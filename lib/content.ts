@@ -136,6 +136,93 @@ export const secondary: Project[] = [
       },
     ],
   },
+  {
+    // Metrics and the async architecture come from the résumé. The feature list, the
+    // React/TypeScript work and the two deep dives come from the case-study outline:
+    // confirm each against what shipped before publishing. Details are generalised for
+    // confidentiality: no internal names, document types, teams or screenshots.
+    slug: "ai-workspace",
+    title: "AI Workspace at IFAD",
+    problem:
+      "Staff spent hours reading, translating and pulling tables out of long documents by hand. The goal was one workspace where those jobs took seconds.",
+    role: "Full-stack engineer (internship)",
+    stack: ["React + TypeScript", "FastAPI", "PostgreSQL", "Azure Service Bus", "LLM APIs"],
+    year: "2025–2026",
+    visual: "Upload → parse & OCR → LLM step → validation → result",
+    media: {
+      type: "diagram",
+      label: "AI Workspace architecture: fast upload request, queued background processing, validated results",
+      pipeline: {
+        request: ["Upload", "Validate size and type", "Create job"],
+        response: "Job accepted · processing",
+        queue: "Azure Service Bus",
+        stages: [
+          "Parse and OCR (text, layout, tables)",
+          "LLM step (prompt per feature)",
+          "Validate output (rules per feature)",
+          "Save result for the interface",
+        ],
+        stores: ["PostgreSQL"],
+      },
+    },
+    accent: "pink",
+    caseStudy: [
+      {
+        heading: "Context",
+        body: "Staff across the organisation worked with long documents every day: reading them, translating them, pulling out tables, rewriting sections. Most of it was manual and slow. The goal was one internal workspace where these jobs took seconds.",
+      },
+      {
+        heading: "What I built",
+        body: "Fourteen document and language tools in four families, each owned end to end, from the React interface to the Python API.",
+        points: [
+          "Document understanding: OCR conversion, table extraction, image extraction, document comparison and document translation.",
+          "Chat with documents: file chat and text reasoning.",
+          "Language tools: translation, generation, content polish, transcription and narration.",
+          "Visual generation: icon generation and word clouds.",
+        ],
+      },
+      {
+        heading: "The platform",
+        body: "Every feature follows the same path: upload, parse and OCR, an LLM step, validation, then the result in the interface. Uploads return straight away and Azure Service Bus workers do the heavy work, so the APIs stayed under 200 ms. Building that path once meant each new feature was mostly its prompt and its validation rules.",
+      },
+      {
+        heading: "Chatting with a document",
+        body: "Long documents don’t fit in a model’s context window.",
+        points: [
+          "Documents are split into chunks, and only the chunks relevant to each question are sent to the model.",
+          "Answers point back to the page they came from, so people can check them.",
+          "When the answer isn’t in the document, the assistant says so instead of guessing.",
+        ],
+      },
+      {
+        heading: "Extracting tables",
+        body: "OCR alone breaks on real-world tables: merged headers, tables spanning pages, faint scans.",
+        points: [
+          "Azure’s table extraction first, then an LLM repair step for merged headers and rows split across pages.",
+          "Every result is validated before it is shown: row and column counts, and unexpected empty cells.",
+        ],
+      },
+      {
+        heading: "Hard parts",
+        body: "The work that took the most care:",
+        points: [
+          "Accepting large, image-heavy files without timeouts or memory spikes.",
+          "Keeping the interface responsive while long OCR and model jobs ran in the background.",
+          "Checking LLM output before trusting it, instead of assuming it was right.",
+          "Handling documents that mix several languages.",
+        ],
+      },
+      {
+        heading: "Outcome",
+        body: "Fourteen features shipped on one shared platform, with background workers that cut failed jobs by 60%.",
+        points: [
+          "The frontend was migrated from JavaScript to TypeScript, with shared typed contracts between the interface and the API.",
+          "The interface was redesigned from Figma into production components.",
+          "Details are generalised to respect confidentiality; diagrams are redrawn and no real documents are shown.",
+        ],
+      },
+    ],
+  },
 ];
 
 // Each capability is shown as a miniature system (flow), with its tools as quiet text.
@@ -202,6 +289,7 @@ export const experience: Experience[] = [
     org: "IFAD, Rome",
     impact:
       "Built FastAPI and PostgreSQL services for document ingestion, OCR, extraction and review (~100 documents a day), with Azure Service Bus workers that kept APIs under 200 ms and cut failed jobs by 60%.",
+    href: "/projects/ai-workspace",
   },
   {
     start: "Aug 2024",
