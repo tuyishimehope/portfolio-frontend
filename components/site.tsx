@@ -573,8 +573,8 @@ export function AboutBento() {
         <div className="flex h-full flex-col rounded-3xl bg-sky-50 p-7 ring-1 ring-ink/[0.06] md:p-10">
           <p className="font-mono text-[12px] tracking-[0.12em] text-muted-foreground uppercase">Hello, I&apos;m Hope</p>
           <p className="mt-5 text-[clamp(24px,2.5vw,34px)] leading-[1.2] font-medium tracking-[-0.02em] text-ink">
-            I like problems where software has to keep working after the demo:{" "}
-            <span className="text-body">messy data, long-running jobs, integrations, and people who depend on it.</span>
+           Software engineer focused on backend systems and applied AI  <br />
+            <span className="text-body">that hold up beyond the demo: messy data, long-running jobs, integrations, and the people who depend on them.</span>
           </p>
           <p className="mt-6 max-w-xl text-[17px] leading-[1.6] text-body">
             Most recently at IFAD, a UN agency in Rome, I built asynchronous document-processing services with FastAPI,

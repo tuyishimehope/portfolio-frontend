@@ -16,12 +16,11 @@ export default function AboutPage() {
         <div className="grid gap-12 md:grid-cols-12 md:gap-8">
           <div className="md:col-span-7">
             <h1 className="text-[clamp(32px,4vw,52px)] font-semibold leading-[1.1] tracking-[-0.02em]">
-              I like problems where software has to keep working after the demo.
+              Software engineer focused on backend systems and applied AI 
             </h1>
             <div className="mt-8 max-w-xl space-y-5 text-[18px] leading-relaxed text-body">
               <p>
-                Messy data, long-running jobs, integrations, and people who depend on it. That&apos;s the work
-                I&apos;m drawn to.
+               that hold up beyond the demo: messy data, long-running jobs, integrations, and the people who depend on them.
               </p>
               <p>
                 I started with multi-tenant Node.js and PostgreSQL APIs at Andela, then built real-time
